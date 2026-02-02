@@ -1,0 +1,15 @@
+.navbar {
+    font-family: "Hanken Grotesk", sans-serif;
+  }
+  
+  .nav-big {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #111 !important;
+    text-decoration: none;
+  }
+  
+  .nav-big:hover {
+    opacity: 0.6;
+  }
+  

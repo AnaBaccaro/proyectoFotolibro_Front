@@ -1,0 +1,109 @@
+/* Sección completa */
+.catalog-section {
+    background-color: #3b1f17; /* marrón */
+    color: #ffffff;
+    padding: 60px 20px;
+    min-height: 100vh;
+  }
+  
+  /* Container */
+  .catalog-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  /* Título */
+  .catalog-title {
+    font-size: 2.5rem;
+    font-weight: 200;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+  }
+  
+  /* Grilla de libros */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    gap: 30px;
+    justify-items: center;
+  }
+  
+  /* Card del libro */
+  .catalog-item {
+    position: relative;
+    width: 100%;
+    max-width: 250px;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .catalog-item img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  /* Hover con fondo y texto */
+  .catalog-item-hover {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    background-color: rgba(0,0,0,0.6);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-align: center;
+  }
+  
+  .catalog-item:hover .catalog-item-hover {
+    opacity: 1;
+  }
+  
+  /* Paginación */
+  .pagination {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .pagination button {
+    background: none;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .pagination button.active,
+  .pagination button:hover {
+    background-color: #fff;
+    color: #3b1f17;
+    font-weight: bold;
+  }
+  
+  .pagination button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .catalog-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .catalog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  

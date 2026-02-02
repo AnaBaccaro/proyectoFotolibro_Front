@@ -1,0 +1,82 @@
+.photobook-search {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto 3rem auto;
+  }
+  
+  .photobook-search input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+    border: 1px solid #ddd;
+    outline: none;
+    background: white;
+    color: #222;
+    letter-spacing: 0.5px;
+  }
+  
+  .photobook-search input::placeholder {
+    color: #888;
+  }
+  
+  /* Dropdown */
+  
+  .photobook-search-results {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #eee;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    z-index: 50;
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  
+  /* Item */
+  
+  .photobook-search-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #f2f2f2;
+  }
+  
+  .photobook-search-item:hover {
+    background: #fafafa;
+  }
+  
+  /* Thumbnail */
+  
+  .photobook-search-item img {
+    width: 54px;
+    height: 72px;
+    object-fit: cover;
+    background: #eee;
+  }
+  
+  /* Meta */
+  
+  .photobook-search-meta {
+    text-align: left;
+  }
+  
+  .photobook-search-meta .title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #111;
+  }
+  
+  .photobook-search-meta .author {
+    font-size: 0.8rem;
+    color: #555;
+  }
+  
+  .photobook-search-meta .extra {
+    font-size: 0.75rem;
+    color: #888;
+  }
+  

@@ -1,0 +1,138 @@
+/* =========================
+   SECCIÓN
+========================= */
+
+.curated-carousel-section {
+    background-color: #ffffff;
+    color: #ffffff;
+    padding: 80px 20px;
+    text-align: center;
+    margin-bottom: 6rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  
+  /* =========================
+     TÍTULO + SUBTÍTULO
+     (igual a latest grid)
+  ========================= */
+  
+  .curated-title {
+    font-size: 2.4rem;
+    font-weight: 200;
+    color: black;
+    letter-spacing: 3px;
+    margin-bottom: 1.2rem;
+  }
+  
+  .curated-subtitle {
+    font-size: 0.9rem;
+    color: black;
+    max-width: 720px;
+    margin: 0 auto 3rem auto;
+    line-height: 1.4;
+  }
+  
+  
+  /* =========================
+     SWIPER CONTENEDOR
+  ========================= */
+  
+  .curated-carousel-section .swiper {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-bottom: 50px; /* espacio para puntitos */
+  }
+  
+  
+  /* =========================
+     SLIDES
+  ========================= */
+  
+  .curated-carousel-section .swiper-slide {
+    display: flex;
+    justify-content: center;
+  }
+  
+  
+  /* =========================
+     TARJETA IMAGEN
+     (mismo look latest grid)
+  ========================= */
+  
+  .curated-carousel-section .swiper-slide img {
+    width: 200px;
+    height: 260px;
+    object-fit: cover;
+    display: block;
+    background-color: rgba(255,255,255,0.04);
+    border-radius: 0;
+    transition: transform 0.3s ease;
+  }
+  
+  .curated-carousel-section .swiper-slide img:hover {
+    transform: scale(1.05);
+  }
+  
+  
+  /* =========================
+     EFECTO GALERÍA CURADA
+  ========================= */
+  
+  /* laterales */
+  .curated-carousel-section .swiper-slide img {
+    opacity: 0.55;
+    transform: scale(0.92);
+    transition: transform 0.35s ease, opacity 0.35s ease;
+  }
+  
+  /* vecinos */
+  .curated-carousel-section .swiper-slide-prev img,
+  .curated-carousel-section .swiper-slide-next img {
+    opacity: 0.75;
+    transform: scale(0.97);
+  }
+  
+  /* central */
+  .curated-carousel-section .swiper-slide-active img {
+    opacity: 1;
+    transform: scale(1.08);
+    z-index: 2;
+  }
+  
+  
+  /* =========================
+     PAGINACIÓN — ABAJO
+  ========================= */
+  
+  .curated-carousel-section .swiper-pagination {
+    bottom: 0 !important;
+    position: relative;
+    margin-top: 18px;
+  }
+  
+  
+  /* puntitos base */
+  .curated-carousel-section .swiper-pagination-bullet {
+    background: #aaa;
+    opacity: 1;
+  }
+  
+  /* puntito activo ROJO */
+  .curated-carousel-section .swiper-pagination-bullet-active {
+    background: #c0392b;
+  }
+  
+  
+  /* =========================
+     RESPONSIVE
+  ========================= */
+  
+  @media (max-width: 768px) {
+    .curated-carousel-section {
+      padding: 60px 15px;
+    }
+  }
+  
