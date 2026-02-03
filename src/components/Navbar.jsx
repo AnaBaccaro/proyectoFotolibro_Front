@@ -8,7 +8,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link className="navbar-brand" to="/">
           <img
-            src="http://localhost:3001/img/PF_Logo_SVG.svg"
+            src="http://localhost:3001/img/PF_Logo_Horizontal_SVG.svg"
             alt="Proyecto Fotolibro"
             className="navbar-logo"
           />

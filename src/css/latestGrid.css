@@ -2,7 +2,7 @@
 .latest-grid-section {
     background-color: #2c1811;
     color: #ffffff;
-    padding: 80px 20px;
+    
     text-align: center;
     margin-bottom: 6rem; 
     width: 100%;
@@ -12,18 +12,20 @@
 /* Título */
 .latest-title {
     font-size: 2.4rem;
-    font-weight: 200;
+    font-weight: 100;
     color:#ffffff;
     letter-spacing: 3px;
+    margin-top: 6rem;
     margin-bottom: 1.2rem;
 }
 
 /* Subtítulo */
 .latest-subtitle {
     font-size: 0.9rem;
+    font-weight: 100;
     color: #ffffff;
     max-width: 720px;
-    margin: 0 auto 3rem auto;
+    margin: 0 auto 4rem auto;
     line-height: 1.4;
 }
 
@@ -31,17 +33,17 @@
 .latest-grid-container {
     display: grid;
     grid-template-columns: repeat(3, 240px); 
-    gap: 116px;
+    gap: 70px;
     justify-content: center;
 }
 
 /* Card */
 .latest-grid-item {
     width: 100%;
-    max-width: 200px;
+    max-width: 250px;
     background-color: rgba(255, 255, 255, 0.04);
     overflow: hidden;
-    border-radius: 0; /* 👈 puntas cuadradas */
+    border-radius: 0; 
 }
 
 /* Imagen */
