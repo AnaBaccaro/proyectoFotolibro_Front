@@ -20,7 +20,7 @@ export default function CuratedCarousel() {
 
   return (
     <section className="curated-carousel-section">
-      
+
       <h2 className="curated-title">NUESTRA SELECCIÓN</h2>
 
       <p className="curated-subtitle">
@@ -29,23 +29,22 @@ export default function CuratedCarousel() {
 
       <Swiper
         modules={[Pagination]}
-        spaceBetween={116}
-        slidesPerView={3}
+        slidesPerView={5}
+        spaceBetween={24}
         loop={true}
         pagination={{ clickable: true }}
         breakpoints={{
-          768: { slidesPerView: 2 },
-          1200: { slidesPerView: 3 },
+          0: { slidesPerView: 2 },
+          768: { slidesPerView: 3 },
+          1024: { slidesPerView: 5 },
         }}
       >
         {books.map((book, i) => (
           <SwiperSlide key={i}>
-            <div className="curated-card">
-              <img
-                src={`http://localhost:3001/img/${book.Imagen}`}
-                alt={book.Título}
-              />
-            </div>
+            <img
+              src={`http://localhost:3001/img/${book.Imagen}`}
+              alt={book.Título}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

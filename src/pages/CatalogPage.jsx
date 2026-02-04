@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CatalogHero from "../components/CatalogHero";
 import PhotobookGrid from "../components/PhotobookGrid";
-import "../css/catalogPage.css";
+import Pagination from "../components/Pagination";
 
 const API_URL = "http://localhost:3001";
 
@@ -15,7 +15,9 @@ export default function CatalogPage() {
     fetch(`${API_URL}/fotolibros`)
       .then((res) => res.json())
       .then((data) => setLibros(data))
-      .catch((err) => console.error("Error cargando fotolibros:", err));
+      .catch((err) =>
+        console.error("Error cargando fotolibros:", err)
+      );
   }, []);
 
   const indexOfLast = currentPage * librosPerPage;
@@ -27,6 +29,7 @@ export default function CatalogPage() {
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -34,14 +37,13 @@ export default function CatalogPage() {
     <>
       <CatalogHero />
 
-      <section className="catalog-grid-section">
-        <PhotobookGrid
-          libros={currentLibros}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          handlePageChange={handlePageChange}
-        />
-      </section>
+      <PhotobookGrid libros={currentLibros} />
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </>
   );
 }
