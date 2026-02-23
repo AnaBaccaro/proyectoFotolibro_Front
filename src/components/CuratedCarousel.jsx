@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "../css/curatedCarousel.css";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -12,20 +13,17 @@ export default function CuratedCarousel() {
 
   useEffect(() => {
     fetch("http://localhost:3001/fotolibros/curated")
-      .then(res => res.json())
-      .then(data => setBooks(data));
+      .then((res) => res.json())
+      .then((data) => setBooks(data));
   }, []);
 
   if (!books.length) return null;
 
   return (
     <section className="curated-carousel-section">
-
       <h2 className="curated-title">NUESTRA SELECCIÓN</h2>
 
-      <p className="curated-subtitle">
-        Nuestros fotolibros favoritos.
-      </p>
+      <p className="curated-subtitle">Nuestros fotolibros favoritos.</p>
 
       <Swiper
         modules={[Pagination]}
@@ -39,16 +37,17 @@ export default function CuratedCarousel() {
           1024: { slidesPerView: 5 },
         }}
       >
-        {books.map((book, i) => (
-          <SwiperSlide key={i}>
-            <img
-              src={`http://localhost:3001/img/${book.Imagen}`}
-              alt={book.Título}
-            />
+        {books.map((book) => (
+          <SwiperSlide key={book.id}>
+            <Link to={`/fotolibro/${book.id}`}>
+              <img
+                src={`http://localhost:3001/img/${book.Imagen}`}
+                alt={book.Título}
+              />
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>
-
     </section>
   );
 }

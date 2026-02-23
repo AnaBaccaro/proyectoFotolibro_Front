@@ -1,17 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100;200;300;400;500;600;700;800&display=swap');
 
-.hanken-light { font-weight: 300; }
-.hanken-bold { font-weight: 700; }
+/* ========================= */
+/* HOME PAGE BASE */
+/* ========================= */
 
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
+.home-page {
   background-color: #2c1811;
+  min-height: 100vh;
+  width: 100%;
 }
 
-body {
-  font-family: "Hanken Grotesk", sans-serif;
+/* Cada bloque grande del home */
+.home-section {
+  background-color: #2c1811;
+  width: 100%;
 }
 
 /* ========================= */
@@ -20,10 +22,6 @@ body {
 
 header.hero {
   background-color: #2c1811;
-  background-size: cover;
-  background-position: center;
-
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -120,7 +118,6 @@ header.hero {
   box-sizing: border-box;
 }
 
-/* Grid — MISMO CRITERIO QUE LATEST GRID */
 .search-grid {
   display: grid;
   grid-template-columns: repeat(3, 240px);
@@ -128,22 +125,18 @@ header.hero {
   justify-content: center;
 }
 
-/* Card — MISMO TAMAÑO */
 .book-card {
   width: 100%;
   max-width: 200px;
   background-color: rgba(255, 255, 255, 0.04);
   overflow: hidden;
-  border-radius: 0;
 }
 
-/* Imagen — MISMO COMPORTAMIENTO */
 .book-card img {
   width: 100%;
   height: auto;
   display: block;
   object-fit: cover;
-  border-radius: 0;
   background-color: #2b1e14;
 }
 

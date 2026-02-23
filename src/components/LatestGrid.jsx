@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "../css/latestGrid.css";
 
 const API_URL = "http://localhost:3001";
@@ -10,8 +11,8 @@ export default function LatestGrid() {
     fetch(`${API_URL}/fotolibros/latest`)
       .then((res) => res.json())
       .then((data) => {
-        const mapped = data.map((pb, index) => ({
-          id: index, // temporal hasta DB
+        const mapped = data.map((pb) => ({
+          id: pb.id, // IMPORTANTE: usar id real
           titulo: pb.Título,
           img: `${API_URL}/img/${pb.Imagen}`,
         }));
@@ -36,7 +37,11 @@ export default function LatestGrid() {
 
       <div className="latest-grid-container">
         {libros.map((libro) => (
-          <div key={libro.id} className="latest-grid-item">
+          <Link
+            key={libro.id}
+            to={`/fotolibro/${libro.id}`}
+            className="latest-grid-item"
+          >
             <img
               src={libro.img}
               alt={libro.titulo}
@@ -44,7 +49,7 @@ export default function LatestGrid() {
                 e.target.src = `${API_URL}/img/fallback.jpg`;
               }}
             />
-          </div>
+          </Link>
         ))}
       </div>
     </section>

@@ -1,32 +1,32 @@
-/* src/css/catalogHero.css */
+.catalog-hero {
+  background: linear-gradient(180deg, #2a140c, #1b0d07);
+  padding: 120px 24px 100px;
+  text-align: center;
+  color: #fff;
+}
 
-.catalog-hero-section {
-    background-color: #3b1f17; /* marrón cálido */
-    color: white;
-    padding: 60px 20px;
-    text-align: center;
-    width: 100vw;
-    box-sizing: border-box;
-  }
-  
-  .catalog-hero-container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .catalog-hero-title {
-    font-size: 3rem;
-    font-weight: 200;
-    letter-spacing: 3px;
-    margin-bottom: 1rem;
-  }
-  
-  .catalog-hero-subtitle {
-    font-size: 1rem;
-    margin-bottom: 30px;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.5;
-  }
-  
+.catalog-hero-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.catalog-hero h1 {
+  font-size: 48px;
+  letter-spacing: 4px;
+  margin-bottom: 24px;
+}
+
+.catalog-hero p {
+  font-size: 16px;
+  opacity: 0.85;
+  margin-bottom: 32px;
+}
+
+.catalog-hero input {
+  width: 100%;
+  max-width: 520px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: none;
+  font-size: 14px;
+}

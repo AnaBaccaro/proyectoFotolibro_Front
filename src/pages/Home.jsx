@@ -7,6 +7,7 @@ import { getSearchableText } from "../utils/getSearchableText";
 import "../css/home.css";
 
 const BOOKS_PER_PAGE = 12;
+const API_URL = "http://localhost:3001";
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -15,10 +16,15 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetch("http://localhost:3001/fotolibros")
+    fetch(`${API_URL}/fotolibros`)
       .then((res) => res.json())
-      .then((data) => setAllBooks(data));
+      .then((data) => {
+        console.log("PRIMER LIBRO:", data[0]);
+        setAllBooks(data);
+      });
   }, []);
+  
+  
 
   useEffect(() => {
     if (!search.trim()) {
@@ -43,21 +49,20 @@ export default function Home() {
   const totalPages = Math.ceil(results.length / BOOKS_PER_PAGE);
 
   return (
-    <>
+    <main className="home-page">
       <Hero searchValue={search} onSearchChange={setSearch} />
 
+      {/* RESULTADOS DE BÚSQUEDA */}
       {search && results.length > 0 && (
         <section className="search-results">
           <div className="search-grid">
-            {paginatedResults.map((book, i) => (
-              <div key={i} className="book-card">
+            {paginatedResults.map((book) => (
+              <div key={book.id} className="book-card">
                 <img
-                  src={`http://localhost:3001/img/${book.Imagen}`}
+                  src={`${API_URL}/img/${book.Imagen}`}
                   alt={book.Título || "Sin título"}
                 />
-                <p className={!book.Título ? "italic opacity-60" : ""}>
-                  {book.Título || "Sin título"}
-                </p>
+                <p>{book.Título || "Sin título"}</p>
               </div>
             ))}
           </div>
@@ -86,12 +91,13 @@ export default function Home() {
         </section>
       )}
 
+      {/* HOME DEFAULT */}
       {!search && (
         <>
           <LatestGrid />
           <CuratedCarousel />
         </>
       )}
-    </>
+    </main>
   );
 }

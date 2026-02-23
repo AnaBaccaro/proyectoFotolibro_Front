@@ -29,7 +29,7 @@ export default function Navbar() {
           <ul className="navbar-nav ms-auto align-items-center gap-4">
 
             <li className="nav-item">
-              <Link className="nav-link nav-big hanken-medium" to="/explorar">
+              <Link className="nav-link nav-big hanken-medium" to="/catalogo">
                 Catálogo
               </Link>
             </li>
