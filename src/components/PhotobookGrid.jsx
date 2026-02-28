@@ -3,18 +3,31 @@ import "../css/photobookGrid.css";
 
 const API_URL = "http://localhost:3001";
 
+const PLACEHOLDER =
+  "data:image/svg+xml;charset=UTF-8," +
+  encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="600" height="800">
+      <rect width="100%" height="100%" fill="#e6e6e6"/>
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+            font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#666">
+        Sin imagen
+      </text>
+    </svg>
+  `);
+
 const getId = (libro) => {
-  // Tu backend ya está enviando id (porque lo generás en el controller)
   const id = Number(libro?.id);
   return Number.isFinite(id) && id > 0 ? id : null;
 };
 
 const getImg = (libro) => {
-  const img = libro?.Imagen;
-  if (typeof img === "string" && img.trim() && img !== "null") {
-    return `${API_URL}/img/${img}`;
+  const img = (libro?.Imagen ?? "").toString().trim();
+
+  if (!img || img.toLowerCase() === "null" || img.toLowerCase() === "undefined") {
+    return PLACEHOLDER;
   }
-  return `${API_URL}/img/imgplaceholder_sinimg.jpg`;
+
+  return `${API_URL}/img/${encodeURIComponent(img)}`;
 };
 
 export default function PhotobookGrid({
@@ -33,16 +46,16 @@ export default function PhotobookGrid({
           if (!id) return null;
 
           return (
-            <Link
-              key={id}
-              to={`/fotolibro/${id}`}
-              className="photobook-card"
-            >
+            <Link key={id} to={`/fotolibro/${id}`} className="photobook-card">
               <img
                 src={getImg(libro)}
                 alt={libro["Título"] || "Fotolibro"}
+                loading="lazy"
                 onError={(e) => {
-                  e.currentTarget.src = `${API_URL}/img/imgplaceholder_sinimg.jpg`;
+                  const el = e.currentTarget;
+                  if (el.dataset.fallback === "1") return;
+                  el.dataset.fallback = "1";
+                  el.src = PLACEHOLDER;
                 }}
               />
             </Link>
