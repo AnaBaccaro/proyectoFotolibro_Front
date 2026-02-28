@@ -9,7 +9,7 @@ export default function CatalogPage() {
   const [libros, setLibros] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const librosPerPage = 9;
+  const librosPerPage = 12;
 
   useEffect(() => {
     fetch(`${API_URL}/fotolibros`)

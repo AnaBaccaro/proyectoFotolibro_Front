@@ -16,7 +16,7 @@ function App() {
         <Route path="/catalogo" element={<CatalogPage />} />
 
         {/* Vista individual de un fotolibro */}
-        <Route path="/fotolibros/:id" element={<Photobook />} />
+        <Route path="/fotolibro/:id" element={<Photobook />} />
       </Routes>
 
       <Footer />

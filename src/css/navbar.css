@@ -1,15 +1,70 @@
+/* ---------- NAVBAR BASE ---------- */
+
 .navbar {
-    font-family: "Hanken Grotesk", sans-serif;
+  font-family: "Hanken Grotesk", sans-serif;
+}
+
+/* Altura/padding real del navbar */
+.navbar-custom {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* Asegura centrado vertical dentro del container */
+.navbar-container {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+}
+
+/* Brand sin padding extra */
+.navbar-brand-custom {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* LOGO */
+.navbar-logo {
+  height: 36px; 
+  width: auto;
+  display: block;
+}
+
+/* LINKS: Bootstrap mete padding vertical en .nav-link, lo bajamos */
+.navbar-links {
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navbar-links .nav-link {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Tamaño de links */
+.nav-big {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #111 !important;
+  text-decoration: none;
+  line-height: 1.1;
+}
+
+.nav-big:hover {
+  opacity: 0.6;
+}
+
+/* Responsive: cuando se abre el menú en mobile, damos aire vertical */
+@media (max-width: 991px) {
+  .navbar-links {
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding-top: 10px;
   }
-  
-  .nav-big {
-    font-size: 1.6rem;
-    font-weight: 500;
-    color: #111 !important;
-    text-decoration: none;
+
+  .navbar-links .nav-link {
+    padding: 10px 0;
   }
-  
-  .nav-big:hover {
-    opacity: 0.6;
-  }
-  
+}

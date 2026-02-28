@@ -1,20 +1,105 @@
+/* =========================
+   GRID CATALOGO (12 ITEMS)
+========================= */
+
 .photobook-grid {
   display: grid;
-  grid-template-columns: repeat(3, 240px);
-  gap: 70px;
+  grid-template-columns: repeat(4, 210px); /* 4 columnas */
+  gap: 48px 44px;
   justify-content: center;
 }
 
+/* =========================
+   CARD LIBRO
+========================= */
+
 .photobook-card {
-  width: 100%;
-  max-width: 250px;
-  background-color: rgba(255, 255, 255, 0.04);
+  width: 210px;
+  aspect-ratio: 300 / 444; /* proporción fotolibro */
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
+.photobook-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Imagen */
 .photobook-card img {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+/* =========================
+   PAGINADO
+========================= */
+
+.pagination-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin-top: 48px;
+}
+
+.pagination-arrow {
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.pagination-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.pagination-dots {
+  display: flex;
+  gap: 10px;
+}
+
+.pagination-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  background: #bdbdbd;
+  cursor: pointer;
+}
+
+.pagination-dot.is-active {
+  background: #fa4200;
+  width: 24px;
+  height: 7px;
+  border-radius: 999px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .photobook-grid {
+    grid-template-columns: repeat(3, 200px);
+  }
+
+  .photobook-card {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .photobook-grid {
+    grid-template-columns: repeat(2, 170px);
+    gap: 32px;
+  }
+
+  .photobook-card {
+    width: 170px;
+  }
 }

@@ -1,6 +1,6 @@
 .catalog-hero {
   background: linear-gradient(180deg, #2a140c, #1b0d07);
-  padding: 120px 24px 100px;
+  padding: 84px 24px 64px; /* menos aire */
   text-align: center;
   color: #fff;
 }
@@ -11,22 +11,25 @@
 }
 
 .catalog-hero h1 {
-  font-size: 48px;
-  letter-spacing: 4px;
-  margin-bottom: 24px;
+  font-size: 4rem;
+  margin-bottom: 16px; /* menos separación */
+  font-weight: 200; /* más editorial, cambiá a 300 si lo querés un toque más marcado */
 }
 
 .catalog-hero p {
-  font-size: 16px;
+  font-size: 15px;
   opacity: 0.85;
-  margin-bottom: 32px;
+  margin-bottom: 22px; /* menos separación */
+  font-weight: 200; /* o 300 */
+  line-height: 1.5;
 }
 
 .catalog-hero input {
   width: 100%;
   max-width: 520px;
-  padding: 14px 18px;
+  padding: 12px 16px; /* más fino */
   border-radius: 999px;
   border: none;
   font-size: 14px;
+  outline: none;
 }

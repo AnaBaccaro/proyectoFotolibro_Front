@@ -1,19 +1,17 @@
 /* Sección completa */
 .latest-grid-section {
-color: #000000;
+    color: #000000;
     text-align: center;
     margin-bottom: 6rem;
     width: 100%;
     box-sizing: border-box;
 }
 
-
 /* Título */
 .latest-title {
-    font-size: 2.4rem;
-    font-weight: 100;
-    color:#ffffff;
-    letter-spacing: 3px;
+    font-size: 2.5rem;
+    font-weight: 200;
+    color: #ffffff;
     margin-top: 6rem;
     margin-bottom: 1.2rem;
 }
@@ -21,37 +19,35 @@ color: #000000;
 /* Subtítulo */
 .latest-subtitle {
     font-size: 0.9rem;
-    font-weight: 100;
+    font-weight: 200;
     color: #ffffff;
     max-width: 720px;
     margin: 0 auto 4rem auto;
     line-height: 1.4;
 }
 
-/* Grid */
+/* GRID */
 .latest-grid-container {
     display: grid;
-    grid-template-columns: repeat(3, 240px); 
-    gap: 70px;
+    grid-template-columns: repeat(3, 200px);
+    gap: 60px;
     justify-content: center;
 }
 
-/* Card */
+/* CARD — ahora con proporción fija tipo fotolibro */
 .latest-grid-item {
-    width: 100%;
-    max-width: 250px;
-    background-color: rgba(255, 255, 255, 0.04);
+    width: 200px;
+    aspect-ratio: 300 / 444;
     overflow: hidden;
-    border-radius: 0; 
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
-/* Imagen */
+/* IMAGEN llena el frame */
 .latest-grid-item img {
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100%;
     object-fit: cover;
-    border-radius: 0;
+    display: block;
 }
 
 /* Responsive */
@@ -61,6 +57,11 @@ color: #000000;
     }
 
     .latest-grid-container {
-        gap: 20px;
+        grid-template-columns: repeat(2, 42vw);
+        gap: 24px;
+    }
+
+    .latest-grid-item {
+        width: 42vw;
     }
 }

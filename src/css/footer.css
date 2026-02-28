@@ -1,46 +1,56 @@
 .footer {
-  background-color: #2c1811; 
+  background-color: #2c1811;
   color: #ffffff;
   font-family: "Hanken Grotesk", sans-serif;
-  min-height: 150px;
-  display: flex;
-  align-items: center;
+
+  /* Esto arregla "texto pegado arriba" */
+  padding: 3.2rem 0;
+}
+
+/* Contenedor centrado real */
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2.2rem;
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1.25fr 0.9fr 0.85fr;
   gap: 6rem;
-  max-width: 1100px;
-  margin: 0 auto;
   align-items: start;
+
+  /* Para que las 3 columnas queden centradas como bloque */
+  justify-items: start;
 }
 
-/* COLUMNA 1: LOGO + DESCRIPCIÓN */
+/* TITULOS EN ROJO (el mismo que venís usando) */
+.footer-title,
+.footer-heading {
+  color: #fa4200;
+}
+
+/* Columna 1 */
 .footer-title {
   font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 1.2rem;
+  font-weight: 600; /* más liviano */
+  margin-bottom: 1.1rem;
+  letter-spacing: 0.4px;
 }
 
 .footer-subtitle {
   font-size: 0.9rem;
-  font-weight: 300;
+  font-weight: 300; /* texto blanco más liviano */
   line-height: 1.6;
-  max-width: 280px;
+  max-width: 290px;
+  opacity: 0.9;
 }
 
-.navbar-logo {
-  height: 40px;
-  width: auto;
-  display: block;
-}
-
-/* HEADINGS (Explorar, Conectar) */
+/* Headings (Explorar / Conectar) */
 .footer-heading {
-  font-weight: 600;
+  font-weight: 500; /* más liviano */
   font-size: 1rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.1rem;
 }
 
 /* LINKS */
@@ -48,56 +58,68 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  gap: 0.25rem;
 }
 
 .footer-links a {
   color: #ffffff;
   text-decoration: none;
-  font-weight: 300;
+  font-weight: 300; /* más liviano */
   font-size: 0.9rem;
+  opacity: 0.9;
 }
 
 .footer-links a:hover {
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
-/* ICONOS */
+/* ICONOS en cuadrados como Figma */
 .footer-icons {
   display: flex;
   gap: 1rem;
-  margin-top: 0.5rem;
+  margin-top: 0.2rem;
 }
 
 .footer-icons a {
-  color: white;
-  font-size: 1.2rem; 
+  width: 44px;
+  height: 44px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+
+  border-radius: 6px;
+}
+
+.footer-icons i {
+  font-size: 1.15rem;
+  color: #2c1811;
 }
 
 .footer-icons a:hover {
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  .footer {
+    padding: 2.6rem 0;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr;
+    gap: 2.2rem;
     text-align: center;
-    gap: 2.5rem;
+    justify-items: center;
   }
 
   .footer-subtitle {
-    max-width: 100%;
-    margin: 0 auto;
+    max-width: 420px;
   }
 
   .footer-icons {
     justify-content: center;
   }
 }
-
-.footer-container {
-  max-width: 1100px;   
-  margin: 0 auto;      
-  padding: 0 2rem;
-}
-

@@ -1,117 +1,84 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import "../css/photobook.css";
+import { useEffect, useMemo, useState } from "react";
+import CatalogHero from "../components/CatalogHero";
+import PhotobookGrid from "../components/PhotobookGrid";
+import "../css/catalogPage.css";
 
 const API_URL = "http://localhost:3001";
 
-export default function Photobook() {
-  const { id } = useParams();
+const hasValidImage = (b) => {
+  const img = b?.Imagen;
+  return typeof img === "string" && img.trim().length > 0 && img !== "null";
+};
 
-  const [book, setBook] = useState(null);
-  const [related, setRelated] = useState([]);
+export default function CatalogPage() {
+  const [libros, setLibros] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // ---------- BOOK BY ID ----------
+  const librosPerPage = 12;
+
   useEffect(() => {
-    if (!id) return;
+    let alive = true;
 
-    fetch(`${API_URL}/fotolibros/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Libro no encontrado");
-        return res.json();
-      })
-      .then((data) => setBook(data))
-      .catch((err) => console.error(err));
-  }, [id]);
+    const run = async () => {
+      const res = await fetch(`${API_URL}/fotolibros`);
+      const data = await res.json();
 
-  // ---------- RELATED ----------
+      const normalized = Array.isArray(data)
+        ? data.map((b, idx) => {
+            const safeId =
+              typeof b?.id === "number" ? b.id : Number(b?.id) || idx + 1;
+
+            const img = hasValidImage(b) ? b.Imagen : "fallback.jpg";
+
+            return {
+              ...b,
+              id: safeId,
+              Imagen: img,
+            };
+          })
+        : [];
+
+      if (alive) setLibros(normalized);
+    };
+
+    run();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const totalPages = useMemo(() => {
+    const pages = Math.ceil(libros.length / librosPerPage);
+    return pages > 0 ? pages : 1;
+  }, [libros.length]);
+
+  const start = (currentPage - 1) * librosPerPage;
+
+  const currentLibros = useMemo(() => {
+    return libros.slice(start, start + librosPerPage);
+  }, [libros, start]);
+
   useEffect(() => {
-    if (!book) return;
+    if (currentPage > totalPages) setCurrentPage(1);
+  }, [totalPages, currentPage]);
 
-    fetch(`${API_URL}/fotolibros`)
-      .then((res) => res.json())
-      .then((allBooks) => {
-        const similares = allBooks
-          .filter(
-            (b) =>
-              b.id !== book.id &&
-              b.country === book.country &&
-              b.image
-          )
-          .slice(0, 5);
-
-        setRelated(similares);
-      });
-  }, [book]);
-
-  if (!book) return null;
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
 
   return (
-    <>
-      <section className="photobook-detail-hero">
-        <div className="photobook-detail-container">
-          <div className="photobook-detail-image">
-            <img
-              src={`${API_URL}/img/${book.image}`}
-              alt={book.title || "Fotolibro"}
-            />
-          </div>
+    <main className="catalog-page">
+      <CatalogHero />
 
-          <div className="photobook-detail-info">
-            <h1 className="photobook-title">
-              {book.title}
-            </h1>
-
-            <h2 className="photobook-author">
-              {book.author}
-            </h2>
-
-            <p className="photobook-description">
-              {book.description || "—"}
-            </p>
-
-            <div className="photobook-meta">
-              <div>
-                <span className="meta-label">Editorial</span>
-                <span>{book.editorial || "—"}</span>
-              </div>
-
-              <div>
-                <span className="meta-label">Año</span>
-                <span>{book.year || "—"}</span>
-              </div>
-
-              <div>
-                <span className="meta-label">País</span>
-                <span>{book.country || "—"}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <section className="catalog-content">
+        <PhotobookGrid
+          libros={currentLibros}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
       </section>
-
-      {/* ---------- RELATED ---------- */}
-      {related.length > 0 && (
-        <section className="related-section">
-          <h3 className="related-title">
-            TAMBIÉN TE PUEDE INTERESAR
-          </h3>
-
-          <div className="related-grid">
-            {related.map((r) => (
-              <Link
-                key={r.id}
-                to={`/fotolibro/${r.id}`}
-                className="related-item"
-              >
-                <img
-                  src={`${API_URL}/img/${r.image}`}
-                  alt={r.title}
-                />
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-    </>
+    </main>
   );
 }

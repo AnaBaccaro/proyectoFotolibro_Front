@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Hero from "../components/Hero";
 import LatestGrid from "../components/LatestGrid";
 import CuratedCarousel from "../components/CuratedCarousel";
@@ -23,8 +24,6 @@ export default function Home() {
         setAllBooks(data);
       });
   }, []);
-  
-  
 
   useEffect(() => {
     if (!search.trim()) {
@@ -57,13 +56,20 @@ export default function Home() {
         <section className="search-results">
           <div className="search-grid">
             {paginatedResults.map((book) => (
-              <div key={book.id} className="book-card">
+              <Link
+                key={book.id}
+                to={`/fotolibro/${book.id}`}
+                className="book-card"
+              >
                 <img
                   src={`${API_URL}/img/${book.Imagen}`}
                   alt={book.Título || "Sin título"}
+                  onError={(e) => {
+                    e.target.src = `${API_URL}/img/fallback.jpg`;
+                  }}
                 />
                 <p>{book.Título || "Sin título"}</p>
-              </div>
+              </Link>
             ))}
           </div>
 

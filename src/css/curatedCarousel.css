@@ -6,7 +6,7 @@
   background-color: #ffffff;
   padding: 80px 20px;
   text-align: center;
-  margin-bottom: 6rem;
+  margin-bottom: 3rem;
   width: 100%;
   box-sizing: border-box;
 }
@@ -16,10 +16,9 @@
 ========================= */
 
 .curated-title {
-  font-size: 2.4rem;
+  font-size: 2.5rem;
   font-weight: 200;
   color: black;
-  letter-spacing: 3px;
   margin-bottom: 1.2rem;
 }
 
@@ -40,7 +39,6 @@
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
-  padding-bottom: 50px;
 }
 
 /* =========================

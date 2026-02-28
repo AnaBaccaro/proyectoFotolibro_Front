@@ -3,6 +3,20 @@ import "../css/photobookGrid.css";
 
 const API_URL = "http://localhost:3001";
 
+const getId = (libro) => {
+  // Tu backend ya está enviando id (porque lo generás en el controller)
+  const id = Number(libro?.id);
+  return Number.isFinite(id) && id > 0 ? id : null;
+};
+
+const getImg = (libro) => {
+  const img = libro?.Imagen;
+  if (typeof img === "string" && img.trim() && img !== "null") {
+    return `${API_URL}/img/${img}`;
+  }
+  return `${API_URL}/img/imgplaceholder_sinimg.jpg`;
+};
+
 export default function PhotobookGrid({
   libros,
   currentPage,
@@ -15,20 +29,22 @@ export default function PhotobookGrid({
     <>
       <div className="photobook-grid">
         {libros.map((libro) => {
-          const imageUrl =
-            libro.images &&
-            libro.images.length > 0 &&
-            libro.images[0].image_url
-              ? `${API_URL}/${libro.images[0].image_url.replace(/^\//, "")}`
-              : "/img/imgplaceholder_sinimg.jpg";
+          const id = getId(libro);
+          if (!id) return null;
 
           return (
             <Link
-              key={libro.id}
-              to={`/fotolibro/${libro.id}`}
+              key={id}
+              to={`/fotolibro/${id}`}
               className="photobook-card"
             >
-              <img src={imageUrl} alt={libro.title} />
+              <img
+                src={getImg(libro)}
+                alt={libro["Título"] || "Fotolibro"}
+                onError={(e) => {
+                  e.currentTarget.src = `${API_URL}/img/imgplaceholder_sinimg.jpg`;
+                }}
+              />
             </Link>
           );
         })}

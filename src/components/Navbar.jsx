@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
+import "../css/navbar.css";
 
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg bg-white py-3">
-      <div className="container">
-
-        {/* Logo */}
-        <Link className="navbar-brand" to="/">
+    <nav className="navbar navbar-expand-lg bg-white navbar-custom">
+      <div className="container navbar-container">
+        <Link className="navbar-brand navbar-brand-custom" to="/">
           <img
             src="http://localhost:3001/img/PF_Logo_Horizontal_SVG.svg"
             alt="Proyecto Fotolibro"
@@ -14,41 +13,39 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Hamburguesa */}
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Links */}
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto align-items-center gap-4">
-
+          <ul className="navbar-nav ms-auto navbar-links">
             <li className="nav-item">
-              <Link className="nav-link nav-big hanken-medium" to="/catalogo">
+              <Link className="nav-link nav-big" to="/catalogo">
                 Catálogo
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link className="nav-link nav-big hanken-medium" to="/acerca">
+              <Link className="nav-link nav-big" to="/acerca">
                 Sobre el Proyecto
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link className="nav-link nav-big hanken-medium" to="/login">
+              <Link className="nav-link nav-big" to="/login">
                 Contacto
               </Link>
             </li>
-
           </ul>
         </div>
-
       </div>
     </nav>
   );
