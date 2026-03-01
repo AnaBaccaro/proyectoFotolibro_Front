@@ -8,21 +8,14 @@ import "../css/home.css";
 
 const BOOKS_PER_PAGE = 12;
 const API_URL = "http://localhost:3001";
+const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
 
-const PLACEHOLDER =
-  "data:image/svg+xml;charset=UTF-8," +
-  encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="600" height="800">
-      <rect width="100%" height="100%" fill="#e6e6e6"/>
-      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#666">
-        Sin imagen
-      </text>
-    </svg>
-  `);
+const safeStr = (v) => (v ?? "").toString().trim();
+
+const getTitle = (b) => safeStr(b?.["Título"] ?? b?.Titulo ?? "");
 
 const getImgUrl = (book) => {
-  const img = (book?.Imagen ?? "").toString().trim();
+  const img = safeStr(book?.Imagen);
 
   if (!img || img.toLowerCase() === "null" || img.toLowerCase() === "undefined") {
     return PLACEHOLDER;
@@ -71,22 +64,25 @@ export default function Home() {
       {search && results.length > 0 && (
         <section className="search-results">
           <div className="search-grid">
-            {paginatedResults.map((book) => (
-              <Link key={book.id} to={`/fotolibro/${book.id}`} className="book-card">
-                <img
-                  src={getImgUrl(book)}
-                  alt={book["Título"] || "Sin título"}
-                  loading="lazy"
-                  onError={(e) => {
-                    const el = e.currentTarget;
-                    if (el.dataset.fallback === "1") return;
-                    el.dataset.fallback = "1";
-                    el.src = PLACEHOLDER;
-                  }}
-                />
-                <p>{book["Título"] || "Sin título"}</p>
-              </Link>
-            ))}
+            {paginatedResults.map((book) => {
+              const title = getTitle(book) || "Sin título";
+              return (
+                <Link key={book.id} to={`/fotolibro/${book.id}`} className="book-card">
+                  <img
+                    src={getImgUrl(book)}
+                    alt={title}
+                    loading="lazy"
+                    onError={(e) => {
+                      const el = e.currentTarget;
+                      if (el.dataset.fallback === "1") return;
+                      el.dataset.fallback = "1";
+                      el.src = PLACEHOLDER;
+                    }}
+                  />
+                  <p>{title}</p>
+                </Link>
+              );
+            })}
           </div>
 
           {totalPages > 1 && (

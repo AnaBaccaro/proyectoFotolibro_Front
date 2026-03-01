@@ -1,71 +1,147 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/photobookSearch.css";
 
-export default function PhotobookSearch() {
-  const [q, setQ] = useState("");
+const API_URL = "http://localhost:3001";
+
+const getTitleRaw = (b) => b?.Titulo || b?.["Título"] || "";
+const getTitle = (b) => (getTitleRaw(b) || "").toString().trim();
+
+export default function PhotobookSearch({
+  value,
+  onChange,
+  placeholder = "Buscar por título, autor, país, editorial...",
+  showIcon = true,
+  wrapperClassName = "search-wrapper",
+  inputClassName = "search-input-custom",
+  iconClassName = "bi bi-search",
+}) {
+  const isControlled = typeof value === "string" && typeof onChange === "function";
+
+  const [qInternal, setQInternal] = useState("");
+  const q = isControlled ? value : qInternal;
+
+  const setQ = (next) => {
+    if (isControlled) onChange(next);
+    else setQInternal(next);
+  };
+
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
   const navigate = useNavigate();
+  const rootRef = useRef(null);
 
   useEffect(() => {
     if (!q.trim()) {
       setResults([]);
+      setActiveIndex(-1);
       return;
     }
 
-    const timeout = setTimeout(() => {
-      fetch(
-        `http://localhost:3001/fotolibros/buscar?q=${encodeURIComponent(q)}`
-      )
+    const t = setTimeout(() => {
+      fetch(`${API_URL}/fotolibros/buscar?q=${encodeURIComponent(q.trim())}`)
         .then((res) => res.json())
-        .then((data) => setResults(data));
-    }, 300);
+        .then((data) => {
+          setResults(Array.isArray(data) ? data : []);
+          setActiveIndex(-1);
+        });
+    }, 250);
 
-    return () => clearTimeout(timeout);
+    return () => clearTimeout(t);
   }, [q]);
 
-  const goToBook = (book) => {
+  const titles = useMemo(() => {
+    return results
+      .map((b) => ({
+        id: b?.id,
+        title: getTitle(b),
+      }))
+      .filter((x) => x.id != null && x.title);
+  }, [results]);
+
+  const goTo = (id) => {
+    if (id == null) return;
     setOpen(false);
     setQ("");
-    navigate(`/fotolibro/${encodeURIComponent(book["Título"])}`);
+    setResults([]);
+    setActiveIndex(-1);
+    navigate(`/fotolibro/${id}`);
+  };
+
+  useEffect(() => {
+    const onDocMouseDown = (e) => {
+      if (!rootRef.current) return;
+      if (!rootRef.current.contains(e.target)) {
+        setOpen(false);
+        setActiveIndex(-1);
+      }
+    };
+
+    document.addEventListener("mousedown", onDocMouseDown);
+    return () => document.removeEventListener("mousedown", onDocMouseDown);
+  }, []);
+
+  const onKeyDown = (e) => {
+    if (!open || titles.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, titles.length - 1));
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, 0));
+    }
+
+    if (e.key === "Enter") {
+      if (activeIndex >= 0 && activeIndex < titles.length) {
+        e.preventDefault();
+        goTo(titles[activeIndex].id);
+      }
+    }
+
+    if (e.key === "Escape") {
+      setOpen(false);
+      setActiveIndex(-1);
+    }
   };
 
   return (
-    <div className="photobook-search">
-      <input
-        type="text"
-        placeholder="Buscar por título, autor, país o editorial"
-        value={q}
-        onChange={(e) => {
-          setQ(e.target.value);
-          setOpen(true);
-        }}
-        onFocus={() => setOpen(true)}
-      />
+    <div className="photobook-search" ref={rootRef}>
+      <div className={wrapperClassName}>
+        {showIcon && <i className={iconClassName} aria-hidden="true" />}
 
-      {open && results.length > 0 && (
-        <div className="photobook-search-results">
-          {results.map((book, i) => (
+        <input
+          type="text"
+          value={q}
+          className={inputClassName}
+          placeholder={placeholder}
+          onChange={(e) => {
+            setQ(e.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={onKeyDown}
+          autoComplete="off"
+        />
+      </div>
+
+      {open && q.trim() && titles.length > 0 && (
+        <div className="photobook-search-results" role="listbox">
+          {titles.slice(0, 10).map((x, idx) => (
             <div
-              key={i}
-              className="photobook-search-item"
-              onClick={() => goToBook(book)}
+              key={x.id}
+              className={`photobook-search-item ${idx === activeIndex ? "is-active" : ""}`}
+              onMouseEnter={() => setActiveIndex(idx)}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => goTo(x.id)}
+              role="option"
+              aria-selected={idx === activeIndex}
             >
-              <img
-                src={`http://localhost:3001/img/${book.Imagen}`}
-                alt={book["Título"]}
-              />
-
-              <div className="photobook-search-meta">
-                <div className="title">{book["Título"]}</div>
-                <div className="author">
-                  {book["Nombre fotógrafe"]} {book["Apellido fotógrafe"]}
-                </div>
-                <div className="extra">
-                  {book["País"]} — {book["Editorial"]}
-                </div>
-              </div>
+              <div className="photobook-search-title-only">{x.title}</div>
             </div>
           ))}
         </div>

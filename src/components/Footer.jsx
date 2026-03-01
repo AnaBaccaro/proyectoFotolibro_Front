@@ -39,11 +39,19 @@ export default function Footer() {
             <h5 className="footer-heading">Conectar</h5>
 
             <div className="footer-icons">
-              <a href="#" target="_blank" rel="noreferrer" aria-label="Instagram">
+              <a
+                href="https://www.instagram.com/proyectofotolibro"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+              >
                 <i className="bi bi-instagram" />
               </a>
 
-              <a href="mailto:contacto@proyectofotolibro.com" aria-label="Email">
+              <a
+                href="mailto:contacto@proyectofotolibro.com"
+                aria-label="Email"
+              >
                 <i className="bi bi-envelope" />
               </a>
 

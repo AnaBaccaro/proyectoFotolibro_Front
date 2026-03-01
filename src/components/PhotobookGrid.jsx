@@ -2,22 +2,20 @@ import { Link } from "react-router-dom";
 import "../css/photobookGrid.css";
 
 const API_URL = "http://localhost:3001";
-
-const PLACEHOLDER =
-  "data:image/svg+xml;charset=UTF-8," +
-  encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="600" height="800">
-      <rect width="100%" height="100%" fill="#e6e6e6"/>
-      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#666">
-        Sin imagen
-      </text>
-    </svg>
-  `);
+const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
 
 const getId = (libro) => {
   const id = Number(libro?.id);
   return Number.isFinite(id) && id > 0 ? id : null;
+};
+
+const getTitle = (libro) => {
+  return (
+    libro?.Titulo ||
+    libro?.["Título"] ||
+    libro?.["Titulo"] ||
+    "Fotolibro"
+  );
 };
 
 const getImg = (libro) => {
@@ -49,7 +47,7 @@ export default function PhotobookGrid({
             <Link key={id} to={`/fotolibro/${id}`} className="photobook-card">
               <img
                 src={getImg(libro)}
-                alt={libro["Título"] || "Fotolibro"}
+                alt={getTitle(libro)}
                 loading="lazy"
                 onError={(e) => {
                   const el = e.currentTarget;

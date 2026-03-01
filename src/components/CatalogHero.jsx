@@ -1,4 +1,5 @@
 import "../css/catalogHero.css";
+import PhotobookSearch from "./PhotobookSearch";
 
 export default function CatalogHero() {
   return (
@@ -11,10 +12,9 @@ export default function CatalogHero() {
           fotolibros latinoamericanos.
         </p>
 
-        <input
-          type="text"
-          placeholder="Buscar por título, autor, país, editorial…"
-        />
+        <div className="catalog-hero-search">
+          <PhotobookSearch />
+        </div>
       </div>
     </section>
   );

@@ -82,24 +82,22 @@
 }
 
 .footer-icons a {
-  width: 44px;
-  height: 44px;
-  background: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-
-  border-radius: 6px;
-}
-
-.footer-icons i {
-  font-size: 1.15rem;
-  color: #2c1811;
+  color: #ffffff;          /* icono blanco */
+  font-size: 1.4rem;       /* tamaño del icono */
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .footer-icons a:hover {
-  opacity: 0.85;
+  opacity: 0.7;
+  transform: translateY(-2px); /* micro interacción elegante */
+}
+
+.footer-icons i {
+  color: inherit; /* hereda blanco del <a> */
 }
 
 /* RESPONSIVE */
