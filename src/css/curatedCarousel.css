@@ -51,35 +51,108 @@
 }
 
 /* =========================
-   IMAGEN
+   CARD (link)
+   - Sin hover: portada con esquinas 90°
+   - Con hover: aparece card color con bordes redondeados
 ========================= */
 
-.curated-carousel-section .swiper-slide img {
+.curated-card {
+  position: relative;
   width: 160px;
   height: 220px;
+  display: block;
+  text-decoration: none;
+  cursor: default;
+}
+
+/* Portada (SIEMPRE cuadrada) */
+.curated-cover {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.35s ease, opacity 0.35s ease;
-  opacity: 0.6;
-  transform: scale(0.96);
+
+  border-radius: 0;
+  transition: transform 0.35s ease, opacity 0.25s ease;
+
+  opacity: 0.85;
+  transform: scale(0.98);
 }
 
-.curated-carousel-section .swiper-slide img:hover {
-  transform: scale(1.02);
+/* Hover overlay (card color redondeada) */
+.curated-hover {
+  position: absolute;
+  inset: 0;
+  background: var(--hover-bg, #c7c7ff);
+  border-radius: 24px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+
+  display: flex;
+  flex-direction: column;
+  padding: 14px 14px 16px 14px;
+  box-sizing: border-box;
 }
 
-/* vecinos */
-.curated-carousel-section .swiper-slide-prev img,
-.curated-carousel-section .swiper-slide-next img {
-  opacity: 0.8;
-  transform: scale(1);
+/* Activación hover */
+.curated-card:hover .curated-cover {
+  opacity: 0;
 }
 
-/* central */
-.curated-carousel-section .swiper-slide-active img {
+.curated-card:hover .curated-hover {
   opacity: 1;
-  transform: scale(1.04);
-  z-index: 2;
+  transform: translateY(0);
+}
+
+/* Tags arriba */
+.curated-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.curated-tags span {
+  font-size: 0.68rem;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  color: #000;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* Body centrado verticalmente */
+.curated-hover-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: #000;
+}
+
+/* Tipos (más chicos que antes) */
+.curated-hover-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.curated-hover-author {
+  font-size: 0.92rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #000;
 }
 
 /* =========================
@@ -110,8 +183,26 @@
     padding: 60px 15px;
   }
 
-  .curated-carousel-section .swiper-slide img {
+  .curated-card {
     width: 135px;
     height: 185px;
+  }
+
+  .curated-hover {
+    border-radius: 22px;
+    padding: 12px;
+  }
+
+  .curated-hover-title {
+    font-size: 1.05rem;
+  }
+
+  .curated-hover-author {
+    font-size: 0.85rem;
+  }
+
+  .curated-tags span {
+    font-size: 0.64rem;
+    padding: 5px 9px;
   }
 }

@@ -1,67 +1,169 @@
 /* Sección completa */
 .latest-grid-section {
-    color: #000000;
-    text-align: center;
-    margin-bottom: 6rem;
-    width: 100%;
-    box-sizing: border-box;
+  color: #000000;
+  text-align: center;
+  margin-bottom: 6rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Título */
 .latest-title {
-    font-size: 2.5rem;
-    font-weight: 200;
-    color: #ffffff;
-    margin-top: 6rem;
-    margin-bottom: 1.2rem;
+  font-size: 2.5rem;
+  font-weight: 200;
+  color: #ffffff;
+  margin-top: 6rem;
+  margin-bottom: 1.2rem;
 }
 
 /* Subtítulo */
 .latest-subtitle {
-    font-size: 0.9rem;
-    font-weight: 200;
-    color: #ffffff;
-    max-width: 720px;
-    margin: 0 auto 4rem auto;
-    line-height: 1.4;
+  font-size: 0.9rem;
+  font-weight: 200;
+  color: #ffffff;
+  max-width: 720px;
+  margin: 0 auto 4rem auto;
+  line-height: 1.4;
 }
 
 /* GRID */
 .latest-grid-container {
-    display: grid;
-    grid-template-columns: repeat(3, 200px);
-    gap: 60px;
-    justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 200px);
+  gap: 60px;
+  justify-content: center;
 }
 
-/* CARD — ahora con proporción fija tipo fotolibro */
+/* CARD base */
 .latest-grid-item {
-    width: 200px;
-    aspect-ratio: 300 / 444;
-    overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.04);
+  width: 200px;
+  aspect-ratio: 300 / 444;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.04);
+  position: relative;
+  display: block;
+  transition: transform 180ms ease;
 }
 
-/* IMAGEN llena el frame */
-.latest-grid-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+.latest-grid-item:hover {
+  transform: translateY(-4px);
+}
+
+/* Imagen SIEMPRE cuadrada */
+.latest-grid-item img,
+.latest-grid-item .hover-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+  transition: opacity 180ms ease;
+}
+
+/* Hover overlay */
+.latest-grid-item .hover-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--hover-bg, #C7C7FF);
+  border-radius: 24px;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 14px 16px;
+  color: #000;
+  pointer-events: none;
+}
+
+.latest-grid-item:hover .hover-card-img {
+  opacity: 0;
+}
+
+.latest-grid-item:hover .hover-card-overlay {
+  opacity: 1;
+}
+
+/* Tags */
+.latest-grid-item .hover-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.latest-grid-item .hover-card-tag {
+  font-size: 0.64rem;
+  font-weight: 400;
+  color: #000;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Texto */
+.latest-grid-item .hover-card-text {
+  padding-bottom: 6px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.latest-grid-item .hover-card-title {
+  font-size: 1.2rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #000;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.latest-grid-item .hover-card-author {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #000;
+  opacity: 0.9;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .latest-grid-section {
-        padding: 60px 15px;
-    }
+  .latest-grid-section {
+    padding: 60px 15px;
+  }
 
-    .latest-grid-container {
-        grid-template-columns: repeat(2, 42vw);
-        gap: 24px;
-    }
+  .latest-grid-container {
+    grid-template-columns: repeat(2, 42vw);
+    gap: 24px;
+  }
 
-    .latest-grid-item {
-        width: 42vw;
-    }
+  .latest-grid-item {
+    width: 42vw;
+  }
+
+  .latest-grid-item .hover-card-overlay {
+    padding: 12px;
+    border-radius: 22px;
+  }
+
+  .latest-grid-item .hover-card-title {
+    font-size: 1rem;
+  }
+
+  .latest-grid-item .hover-card-author {
+    font-size: 0.8rem;
+  }
+
+  .latest-grid-item .hover-card-tag {
+    font-size: 0.58rem;
+    padding: 5px 9px;
+  }
 }

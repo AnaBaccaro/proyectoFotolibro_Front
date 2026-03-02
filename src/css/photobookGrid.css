@@ -4,33 +4,116 @@
 
 .photobook-grid {
   display: grid;
-  grid-template-columns: repeat(4, 210px); /* 4 columnas */
+  grid-template-columns: repeat(4, 210px);
   gap: 48px 44px;
   justify-content: center;
 }
 
 /* =========================
-   CARD LIBRO
+   CARD LIBRO (SIN HOVER)
+   - Portada SIEMPRE 90°
 ========================= */
 
 .photobook-card {
   width: 210px;
-  aspect-ratio: 300 / 444; /* proporción fotolibro */
+  aspect-ratio: 300 / 444;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.04);
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  transition: transform 180ms ease;
+  position: relative;
+  display: block;
 }
 
 .photobook-card:hover {
   transform: translateY(-4px);
 }
 
-/* Imagen */
-.photobook-card img {
+/* Imagen SIEMPRE cuadrada */
+.photobook-card img,
+.hover-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: 0;
+  transition: opacity 180ms ease;
+}
+
+/* =========================
+   HOVER CARD
+========================= */
+
+.hover-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--hover-bg, #C7C7FF);
+  border-radius: 24px;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 14px 16px;
+  color: #000;
+  pointer-events: none;
+}
+
+.hover-card:hover .hover-card-img {
+  opacity: 0;
+}
+
+.hover-card:hover .hover-card-overlay {
+  opacity: 1;
+}
+
+/* Tags */
+.hover-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.hover-card-tag {
+  font-size: 0.64rem;
+  font-weight: 400;
+  color: #000;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Texto */
+.hover-card-text {
+  padding-bottom: 6px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.hover-card-title {
+  font-size: 1.2rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #000;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hover-card-author {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #000;
+  opacity: 0.9;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* =========================
@@ -43,40 +126,6 @@
   align-items: center;
   gap: 18px;
   margin-top: 48px;
-}
-
-.pagination-arrow {
-  border: none;
-  background: transparent;
-  font-size: 1rem;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.pagination-arrow:disabled {
-  opacity: 0.25;
-  cursor: default;
-}
-
-.pagination-dots {
-  display: flex;
-  gap: 10px;
-}
-
-.pagination-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: none;
-  background: #bdbdbd;
-  cursor: pointer;
-}
-
-.pagination-dot.is-active {
-  background: #fa4200;
-  width: 24px;
-  height: 7px;
-  border-radius: 999px;
 }
 
 /* =========================
@@ -102,4 +151,29 @@
   .photobook-card {
     width: 170px;
   }
+
+  .hover-card-overlay {
+    padding: 12px;
+    border-radius: 22px;
+  }
+
+  .hover-card-title {
+    font-size: 1rem;
+  }
+
+  .hover-card-author {
+    font-size: 0.8rem;
+  }
+
+  .hover-card-tag {
+    font-size: 0.58rem;
+    padding: 5px 9px;
+  }
+
+  .hover-card-text,
+.hover-card-title,
+.hover-card-author {
+  max-width: 100%;
+  min-width: 0;
+}
 }

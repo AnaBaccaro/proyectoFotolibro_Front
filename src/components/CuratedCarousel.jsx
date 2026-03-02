@@ -9,18 +9,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 const API_URL = "http://localhost:3001";
-
-const PLACEHOLDER =
-  "data:image/svg+xml;charset=UTF-8," +
-  encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="600" height="800">
-      <rect width="100%" height="100%" fill="#e6e6e6"/>
-      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-            font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#666">
-        Sin imagen
-      </text>
-    </svg>
-  `);
+const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
 
 const getImgUrl = (imgName) => {
   const img = (imgName ?? "").toString().trim();
@@ -28,6 +17,52 @@ const getImgUrl = (imgName) => {
     return PLACEHOLDER;
   }
   return `${API_URL}/img/${encodeURIComponent(img)}`;
+};
+
+const getTitle = (b) => (b?.Titulo || b?.["Título"] || b?.["Titulo"] || "Fotolibro").toString().trim();
+
+const getAuthor = (b) => {
+  const first =
+    b?.NombreFotografe ||
+    b?.["Nombre fotografe"] ||
+    b?.["Nombre fotógrafe"] ||
+    "";
+  const last =
+    b?.ApellidoFotografe ||
+    b?.["Apellido fotografe"] ||
+    b?.["Apellido fotógrafe"] ||
+    "";
+  const full = `${first} ${last}`.trim();
+  return full || "-";
+};
+
+const parseTags = (b) => {
+  const raw = b?.Tags ?? b?.tags ?? b?.Tag ?? b?.tag ?? "";
+  if (Array.isArray(raw)) {
+    return raw.map((t) => (t ?? "").toString().trim()).filter(Boolean);
+  }
+  const s = raw.toString().trim();
+  if (!s) return [];
+  return s.split(/[,;\n]/g).map((t) => t.trim()).filter(Boolean);
+};
+
+// Paleta (3 colores)
+const HOVER_COLORS = ["#C7C7FF", "#FD3D05", "#e66e43"];
+
+// Hash simple, estable (sin libs)
+const hashString = (str) => {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h << 5) - h + str.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h);
+};
+
+const pickHoverColor = (book) => {
+  const key = `${book?.id ?? ""}|${getTitle(book)}`;
+  const idx = hashString(key) % HOVER_COLORS.length;
+  return HOVER_COLORS[idx];
 };
 
 export default function CuratedCarousel() {
@@ -70,23 +105,50 @@ export default function CuratedCarousel() {
         loop={enableLoop}
         pagination={{ clickable: true }}
       >
-        {books.map((book) => (
-          <SwiperSlide key={book.id}>
-            <Link to={`/fotolibro/${book.id}`}>
-              <img
-                src={getImgUrl(book.Imagen)}
-                alt={book["Título"] || "Fotolibro"}
-                loading="lazy"
-                onError={(e) => {
-                  const el = e.currentTarget;
-                  if (el.dataset.fallback === "1") return;
-                  el.dataset.fallback = "1";
-                  el.src = PLACEHOLDER;
-                }}
-              />
-            </Link>
-          </SwiperSlide>
-        ))}
+        {books.map((book) => {
+          const title = getTitle(book);
+          const author = getAuthor(book);
+          const tags = parseTags(book).slice(0, 2);
+          const bg = pickHoverColor(book);
+
+          return (
+            <SwiperSlide key={book.id}>
+              <Link
+                to={`/fotolibro/${book.id}`}
+                className="curated-card"
+                style={{ "--hover-bg": bg }}
+              >
+                <img
+                  className="curated-cover"
+                  src={getImgUrl(book.Imagen)}
+                  alt={title}
+                  loading="lazy"
+                  onError={(e) => {
+                    const el = e.currentTarget;
+                    if (el.dataset.fallback === "1") return;
+                    el.dataset.fallback = "1";
+                    el.src = PLACEHOLDER;
+                  }}
+                />
+
+                <div className="curated-hover">
+                  {tags.length > 0 && (
+                    <div className="curated-tags">
+                      {tags.map((t, i) => (
+                        <span key={`${t}-${i}`}>{t}</span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="curated-hover-body">
+                    <div className="curated-hover-title">{title}</div>
+                    <div className="curated-hover-author">{author}</div>
+                  </div>
+                </div>
+              </Link>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </section>
   );
