@@ -11,6 +11,10 @@ import "swiper/css/pagination";
 const API_URL = "http://localhost:3001";
 const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
 
+
+const PALETTE = ["#C7C7FF", "#FD3D05", "#e66e43"];
+const PALETTE_NO_LILAC = ["#FD3D05", "#e66e43"];
+
 const safe = (value) => {
   const v = (value ?? "").toString().trim();
   return v ? v : "-";
@@ -38,7 +42,7 @@ const getImgUrl = (imgName) => {
   return `${API_URL}/img/${encodeURIComponent(img)}`;
 };
 
-// getField tolerante: ignora mayúsculas/minúsculas y espacios en keys
+// getField tolerante
 const getField = (obj, key) => {
   if (!obj || typeof obj !== "object") return undefined;
   if (Object.prototype.hasOwnProperty.call(obj, key)) return obj[key];
@@ -87,7 +91,6 @@ const parseTags = (b) => {
   const s = (raw ?? "").toString().trim();
   if (!s) return [];
 
-  // por si en algún caso vino como "[a, b, c]" string
   const cleaned = s.startsWith("[") && s.endsWith("]") ? s.slice(1, -1) : s;
 
   return cleaned
@@ -113,6 +116,25 @@ const getAno = (b) => safe(getField(b, "Año") ?? getField(b, "Ano"));
 const hasSomeImage = (b) => {
   const img = (getField(b, "Imagen") ?? "").toString().trim().toLowerCase();
   return img && img !== "null" && img !== "undefined";
+};
+
+// color estable por id, como tu grid
+const hashString = (str) => {
+  const s = (str ?? "").toString();
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+};
+
+const pickColor = (id, palette) => {
+  const idx = hashString(String(id ?? "")) % palette.length;
+  return palette[idx];
+};
+
+const getHoverColor = (b) => {
+  const id = getField(b, "id");
+  const palette = hasSomeImage(b) ? PALETTE : PALETTE_NO_LILAC;
+  return pickColor(id, palette);
 };
 
 export default function Photobook() {
@@ -291,7 +313,8 @@ export default function Photobook() {
             modules={[Pagination]}
             slidesPerView={5}
             spaceBetween={24}
-            loop={related.length > 5}
+            grabCursor={true}
+            loop={related.length > 2}  
             pagination={{ clickable: true }}
             breakpoints={{
               0: { slidesPerView: 2 },
@@ -299,20 +322,50 @@ export default function Photobook() {
               1024: { slidesPerView: 5 },
             }}
           >
-            {related.map((b) => (
-              <SwiperSlide key={getField(b, "id")}>
-                <Link to={`/fotolibro/${getField(b, "id")}`}>
-                  <img
-                    src={getImgUrl(getField(b, "Imagen"))}
-                    alt={getTitle(b)}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.src = PLACEHOLDER;
-                    }}
-                  />
-                </Link>
-              </SwiperSlide>
-            ))}
+            {related.map((b) => {
+              const rid = getField(b, "id");
+              const rtitle = getTitle(b);
+              const rauthor = getAuthor(b);
+              const rtags = parseTags(b);
+              const tagPair = rtags.slice(0, 2).join("/"); // sin espacios
+              const bg = getHoverColor(b);
+
+              return (
+                <SwiperSlide key={rid}>
+                  <Link to={`/fotolibro/${rid}`} className="related-card">
+                    <img
+                      className="related-cover"
+                      src={getImgUrl(getField(b, "Imagen"))}
+                      alt={rtitle}
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.src = PLACEHOLDER;
+                      }}
+                    />
+
+                    <div className="related-hover" style={{ backgroundColor: bg }}>
+                      <div className="related-hover-top">
+                        {tagPair ? (
+                          <div className="related-hover-tags" title={rtags.join(" / ")}>
+                            {tagPair}
+                          </div>
+                        ) : (
+                          <div />
+                        )}
+                      </div>
+
+                      <div className="related-hover-body">
+                        <div className="related-hover-title">{rtitle}</div>
+                      </div>
+
+                      <div className="related-hover-bottom">
+                        <div className="related-hover-author">{rauthor}</div>
+                      </div>
+                    </div>
+                  </Link>
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         </section>
       )}

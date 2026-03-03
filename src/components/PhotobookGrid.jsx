@@ -5,6 +5,7 @@ const API_URL = "http://localhost:3001";
 const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
 
 const PALETTE = ["#C7C7FF", "#FD3D05", "#e66e43"];
+const PALETTE_NO_LILAC = ["#FD3D05", "#e66e43"];
 
 const getId = (libro) => {
   const id = Number(libro?.id);
@@ -56,6 +57,11 @@ const parseTags = (libro) => {
     .filter(Boolean);
 };
 
+const hasRealImage = (libro) => {
+  const img = (libro?.Imagen ?? "").toString().trim().toLowerCase();
+  return !!img && img !== "null" && img !== "undefined";
+};
+
 const getImg = (libro) => {
   const img = (libro?.Imagen ?? "").toString().trim();
 
@@ -73,10 +79,15 @@ const hashString = (str) => {
   return Math.abs(h);
 };
 
+const pickColor = (id, palette) => {
+  const idx = hashString(String(id ?? "")) % palette.length;
+  return palette[idx];
+};
+
 const getHoverColor = (libro) => {
-  const base = String(getId(libro) ?? "");
-  const idx = hashString(base) % PALETTE.length;
-  return PALETTE[idx];
+  const id = getId(libro);
+  const palette = hasRealImage(libro) ? PALETTE : PALETTE_NO_LILAC;
+  return pickColor(id, palette);
 };
 
 const oneLine = (s) => (s ?? "").toString().replace(/\s+/g, " ").trim();
@@ -88,13 +99,34 @@ const truncate = (s, max) => {
   return text.slice(0, Math.max(0, max - 1)).trimEnd() + "…";
 };
 
-export default function PhotobookGrid({
-  libros,
-  currentPage,
-  totalPages,
-  setCurrentPage,
-}) {
+// === pagination con ellipsis ===
+const getPaginationItems = (currentPage, totalPages) => {
+  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  const items = [];
+  const first = 1;
+  const last = totalPages;
+
+  const left = Math.max(2, currentPage - 1);
+  const right = Math.min(totalPages - 1, currentPage + 1);
+
+  items.push(first);
+
+  if (left > 2) items.push("…");
+
+  for (let p = left; p <= right; p++) items.push(p);
+
+  if (right < totalPages - 1) items.push("…");
+
+  items.push(last);
+
+  return items;
+};
+
+export default function PhotobookGrid({ libros, currentPage, totalPages, setCurrentPage }) {
   if (!libros || libros.length === 0) return null;
+
+  const pages = getPaginationItems(currentPage, totalPages);
 
   return (
     <>
@@ -103,17 +135,24 @@ export default function PhotobookGrid({
           const id = getId(libro);
           if (!id) return null;
 
-          const title = truncate(getTitle(libro), 34);
-          const author = truncate(getAuthor(libro), 30);
+          const titleFull = getTitle(libro);
+          const authorFull = getAuthor(libro);
+
+          const title = truncate(titleFull, 58);
+          const author = truncate(authorFull, 42);
+
           const tags = parseTags(libro);
           const bg = getHoverColor(libro);
+
+          // formato: activismo/memoria (SIN espacios)
+          const tagPair = tags.slice(0, 2).join("/");
 
           return (
             <Link key={id} to={`/fotolibro/${id}`} className="photobook-card hover-card">
               <img
                 className="hover-card-img"
                 src={getImg(libro)}
-                alt={getTitle(libro)}
+                alt={titleFull}
                 loading="lazy"
                 onError={(e) => {
                   const el = e.currentTarget;
@@ -124,21 +163,24 @@ export default function PhotobookGrid({
               />
 
               <div className="hover-card-overlay" style={{ backgroundColor: bg }}>
-                {tags.length > 0 && (
-                  <div className="hover-card-tags">
-                    {tags.slice(0, 2).map((t, idx) => (
-                      <span key={`${t}-${idx}`} className="hover-card-tag">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <div className="hover-card-top">
+                  {tagPair ? (
+                    <div className="hover-card-tags" title={tags.join(" / ")}>
+                      {tagPair}
+                    </div>
+                  ) : (
+                    <div />
+                  )}
+                </div>
 
-                <div className="hover-card-text">
-                  <div className="hover-card-title" title={getTitle(libro)}>
+                <div className="hover-card-center">
+                  <div className="hover-card-title" title={titleFull}>
                     {title}
                   </div>
-                  <div className="hover-card-author" title={getAuthor(libro)}>
+                </div>
+
+                <div className="hover-card-bottom">
+                  <div className="hover-card-author" title={authorFull}>
                     {author}
                   </div>
                 </div>
@@ -149,19 +191,49 @@ export default function PhotobookGrid({
       </div>
 
       {totalPages > 1 && (
-        <div className="pagination-bar">
-          <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-            ←
+        <nav className="pagination-bar" aria-label="Paginación">
+          <button
+            className="page-btn nav"
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            aria-label="Página anterior"
+          >
+            ‹
           </button>
 
-          <span>
-            Página {currentPage} de {totalPages}
-          </span>
+          {pages.map((item, idx) => {
+            if (item === "…") {
+              return (
+                <span key={`dots-${idx}`} className="page-dots" aria-hidden="true">
+                  …
+                </span>
+              );
+            }
 
-          <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-            →
+            const page = item;
+            const active = page === currentPage;
+
+            return (
+              <button
+                key={page}
+                className={`page-btn ${active ? "active" : ""}`}
+                onClick={() => setCurrentPage(page)}
+                aria-current={active ? "page" : undefined}
+              >
+                {page}
+              </button>
+            );
+          })}
+
+          <button
+            className="page-btn nav"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            aria-label="Página siguiente"
+          >
+            ›
           </button>
-        </div>
+        </nav>
       )}
     </>
   );

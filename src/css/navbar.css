@@ -1,3 +1,5 @@
+/* navbar.css (PEGAR COMPLETO) */
+
 /* ---------- NAVBAR BASE ---------- */
 
 .navbar {
@@ -27,12 +29,12 @@
 
 /* LOGO */
 .navbar-logo {
-  height: 36px; 
+  height: 36px;
   width: auto;
   display: block;
 }
 
-/* LINKS: Bootstrap mete padding vertical en .nav-link, lo bajamos */
+/* LINKS */
 .navbar-links {
   align-items: center;
   gap: 1.5rem;
@@ -52,8 +54,13 @@
   line-height: 1.1;
 }
 
-.nav-big:hover {
-  opacity: 0.6;
+/* Sacar hover/feedback visual */
+.nav-big:hover,
+.nav-big:focus,
+.nav-big:active {
+  opacity: 1;
+  color: #111 !important;
+  text-decoration: none;
 }
 
 /* Responsive: cuando se abre el menú en mobile, damos aire vertical */

@@ -52,8 +52,6 @@
 
 /* =========================
    CARD (link)
-   - Sin hover: portada con esquinas 90°
-   - Con hover: aparece card color con bordes redondeados
 ========================= */
 
 .curated-card {
@@ -79,7 +77,7 @@
   transform: scale(0.98);
 }
 
-/* Hover overlay (card color redondeada) */
+/* Hover overlay */
 .curated-hover {
   position: absolute;
   inset: 0;
@@ -106,28 +104,21 @@
   transform: translateY(0);
 }
 
-/* Tags arriba */
-.curated-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  text-align: left;
-  margin-bottom: 10px;
-}
-
-.curated-tags span {
+/* ✅ TagPair arriba (centrado, sin fondo) */
+.curated-tagpair {
   font-size: 0.68rem;
   line-height: 1;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.08);
-  color: #000;
   font-weight: 400;
-  text-transform: none;
+  color: #000;
+  text-align: center;
+  margin-bottom: 10px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Body centrado verticalmente */
+/* Body centrado */
 .curated-hover-body {
   flex: 1;
   display: flex;
@@ -137,7 +128,7 @@
   color: #000;
 }
 
-/* Tipos (más chicos que antes) */
+/* Tipos */
 .curated-hover-title {
   font-size: 1.25rem;
   font-weight: 800;
@@ -201,8 +192,7 @@
     font-size: 0.85rem;
   }
 
-  .curated-tags span {
+  .curated-tagpair {
     font-size: 0.64rem;
-    padding: 5px 9px;
   }
 }

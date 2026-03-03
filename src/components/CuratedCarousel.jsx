@@ -19,19 +19,12 @@ const getImgUrl = (imgName) => {
   return `${API_URL}/img/${encodeURIComponent(img)}`;
 };
 
-const getTitle = (b) => (b?.Titulo || b?.["Título"] || b?.["Titulo"] || "Fotolibro").toString().trim();
+const getTitle = (b) =>
+  (b?.Titulo || b?.["Título"] || b?.["Titulo"] || "Fotolibro").toString().trim();
 
 const getAuthor = (b) => {
-  const first =
-    b?.NombreFotografe ||
-    b?.["Nombre fotografe"] ||
-    b?.["Nombre fotógrafe"] ||
-    "";
-  const last =
-    b?.ApellidoFotografe ||
-    b?.["Apellido fotografe"] ||
-    b?.["Apellido fotógrafe"] ||
-    "";
+  const first = b?.NombreFotografe || b?.["Nombre fotografe"] || b?.["Nombre fotógrafe"] || "";
+  const last = b?.ApellidoFotografe || b?.["Apellido fotografe"] || b?.["Apellido fotógrafe"] || "";
   const full = `${first} ${last}`.trim();
   return full || "-";
 };
@@ -49,7 +42,7 @@ const parseTags = (b) => {
 // Paleta (3 colores)
 const HOVER_COLORS = ["#C7C7FF", "#FD3D05", "#e66e43"];
 
-// Hash simple, estable (sin libs)
+// Hash simple, estable
 const hashString = (str) => {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
@@ -67,9 +60,7 @@ const pickHoverColor = (book) => {
 
 export default function CuratedCarousel() {
   const [books, setBooks] = useState([]);
-  const [viewport, setViewport] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1200
-  );
+  const [viewport, setViewport] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
 
   useEffect(() => {
     fetch(`${API_URL}/fotolibros/curated`)
@@ -103,21 +94,19 @@ export default function CuratedCarousel() {
         slidesPerView={slidesPerView}
         spaceBetween={24}
         loop={enableLoop}
+        grabCursor={true}
         pagination={{ clickable: true }}
       >
         {books.map((book) => {
           const title = getTitle(book);
           const author = getAuthor(book);
           const tags = parseTags(book).slice(0, 2);
+          const tagPair = tags.join("/"); // ✅ formato final
           const bg = pickHoverColor(book);
 
           return (
             <SwiperSlide key={book.id}>
-              <Link
-                to={`/fotolibro/${book.id}`}
-                className="curated-card"
-                style={{ "--hover-bg": bg }}
-              >
+              <Link to={`/fotolibro/${book.id}`} className="curated-card" style={{ "--hover-bg": bg }}>
                 <img
                   className="curated-cover"
                   src={getImgUrl(book.Imagen)}
@@ -132,13 +121,7 @@ export default function CuratedCarousel() {
                 />
 
                 <div className="curated-hover">
-                  {tags.length > 0 && (
-                    <div className="curated-tags">
-                      {tags.map((t, i) => (
-                        <span key={`${t}-${i}`}>{t}</span>
-                      ))}
-                    </div>
-                  )}
+                  {tagPair ? <div className="curated-tagpair">{tagPair}</div> : null}
 
                   <div className="curated-hover-body">
                     <div className="curated-hover-title">{title}</div>

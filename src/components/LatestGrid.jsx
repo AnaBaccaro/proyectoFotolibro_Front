@@ -6,6 +6,7 @@ const API_URL = "http://localhost:3001";
 const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
 
 const PALETTE = ["#C7C7FF", "#FD3D05", "#e66e43"];
+const PALETTE_NO_LILAC = ["#FD3D05", "#e66e43"];
 
 const getImgUrl = (imgName) => {
   const img = (imgName ?? "").toString().trim();
@@ -15,14 +16,25 @@ const getImgUrl = (imgName) => {
   return `${API_URL}/img/${encodeURIComponent(img)}`;
 };
 
+const hasRealImage = (b) => {
+  const img = (b?.Imagen ?? "").toString().trim().toLowerCase();
+  return !!img && img !== "null" && img !== "undefined";
+};
+
 const getTitleFull = (b) =>
   ((b?.Titulo || b?.["Título"] || b?.["Titulo"] || "").toString().trim() || "Fotolibro");
 
 const getAuthorFull = (b) => {
   const first =
-    (b?.NombreFotografe || b?.["Nombre fotografe"] || b?.["Nombre fotógrafe"] || "").toString().trim();
+    (b?.NombreFotografe || b?.["Nombre fotografe"] || b?.["Nombre fotógrafe"] || "")
+      .toString()
+      .trim();
+
   const last =
-    (b?.ApellidoFotografe || b?.["Apellido fotografe"] || b?.["Apellido fotógrafe"] || "").toString().trim();
+    (b?.ApellidoFotografe || b?.["Apellido fotografe"] || b?.["Apellido fotógrafe"] || "")
+      .toString()
+      .trim();
+
   const full = `${first} ${last}`.trim();
   return full || "-";
 };
@@ -42,10 +54,14 @@ const hashString = (str) => {
   return Math.abs(h);
 };
 
+const pickColor = (id, palette) => {
+  const idx = hashString(String(id ?? "")) % palette.length;
+  return palette[idx];
+};
+
 const getHoverColor = (b) => {
-  const base = String(b?.id ?? "");
-  const idx = hashString(base) % PALETTE.length;
-  return PALETTE[idx];
+  const palette = hasRealImage(b) ? PALETTE : PALETTE_NO_LILAC;
+  return pickColor(b?.id, palette);
 };
 
 const oneLine = (s) => (s ?? "").toString().replace(/\s+/g, " ").trim();
@@ -81,11 +97,12 @@ export default function LatestGrid() {
           const titleFull = getTitleFull(b);
           const authorFull = getAuthorFull(b);
 
-          const title = truncate(titleFull, 34);
-          const author = truncate(authorFull, 30);
+          const title = truncate(titleFull, 58);
+          const author = truncate(authorFull, 42);
 
           const tags = parseTags(b);
           const bg = getHoverColor(b);
+          const tagPair = tags.slice(0, 2).join("/");
 
           return (
             <Link key={b.id} to={`/fotolibro/${b.id}`} className="latest-grid-item hover-card">
@@ -100,20 +117,23 @@ export default function LatestGrid() {
               />
 
               <div className="hover-card-overlay" style={{ backgroundColor: bg }}>
-                {tags.length > 0 && (
-                  <div className="hover-card-tags">
-                    {tags.slice(0, 2).map((t, idx) => (
-                      <span key={`${t}-${idx}`} className="hover-card-tag">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                <div className="hover-card-top">
+                  {tagPair ? (
+                    <div className="hover-card-tags" title={tags.join(" / ")}>
+                      {tagPair}
+                    </div>
+                  ) : (
+                    <div />
+                  )}
+                </div>
 
-                <div className="hover-card-text">
+                <div className="hover-card-center">
                   <div className="hover-card-title" title={titleFull}>
                     {title}
                   </div>
+                </div>
+
+                <div className="hover-card-bottom">
                   <div className="hover-card-author" title={authorFull}>
                     {author}
                   </div>

@@ -1,3 +1,5 @@
+/* photobook.css (PEGAR COMPLETO) */
+
 .photobook-detail-hero {
   background: #2c1811;
   color: #fff;
@@ -47,13 +49,13 @@
 .photobook-tags {
   display: flex;
   gap: 0.45rem;
-  margin: 0.2rem 0 2.4rem 0; 
+  margin: 0.2rem 0 2.4rem 0;
   flex-wrap: wrap;
 }
 
 .photobook-tags span {
-  font-size: 0.7rem;        
-  padding: 0.16rem 0.45rem;  
+  font-size: 0.7rem;
+  padding: 0.16rem 0.45rem;
   border-radius: 16px;
   background: #6b5e57;
   color: #c7c7ff;
@@ -133,32 +135,116 @@
   justify-content: center;
 }
 
-/* Imágenes */
-.related-section .swiper-slide img {
+/* === RELATED HOVER CARD (como tu referencia) === */
+
+.related-card {
+  position: relative;
+  width: 150px;
+  height: 222px;
+  display: block;
+  text-decoration: none;
+}
+
+.related-cover {
   width: 150px;
   height: 222px;
   object-fit: cover;
   display: block;
-  transition: transform 0.35s ease, opacity 0.35s ease, box-shadow 0.35s ease;
+  border-radius: 0;
+  transition: opacity 180ms ease, transform 0.35s ease, box-shadow 0.35s ease;
   opacity: 0.6;
   transform: scale(0.96);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
-.related-section .swiper-slide img:hover {
-  transform: scale(1.02);
+/* Hover overlay */
+.related-hover {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 14px 16px;
+  color: #000;
+  pointer-events: none;
+
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
-.related-section .swiper-slide-prev img,
-.related-section .swiper-slide-next img {
-  opacity: 0.8;
+/* Activación hover */
+.related-card:hover .related-cover {
+  opacity: 0;
   transform: scale(1);
 }
 
-.related-section .swiper-slide-active img {
+.related-card:hover .related-hover {
   opacity: 1;
-  transform: scale(1.04);
-  z-index: 2;
+}
+
+/* Tags arriba centrados, sin fondo */
+.related-hover-top {
+  display: flex;
+  justify-content: center;
+}
+
+.related-hover-tags {
+  font-size: 0.66rem;
+  font-weight: 400;
+  color: #000;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* Centro */
+.related-hover-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 0;
+}
+
+.related-hover-title {
+  font-size: 1.05rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #000;
+  max-width: 100%;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Abajo */
+.related-hover-bottom {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  min-width: 0;
+}
+
+.related-hover-author {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #000;
+  opacity: 0.9;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* paginación */
@@ -191,8 +277,26 @@
     padding: 3.8rem 1.2rem;
   }
 
-  .related-section .swiper-slide img {
+  .related-card,
+  .related-cover {
     width: 135px;
     height: 200px;
+  }
+
+  .related-hover {
+    padding: 12px;
+    border-radius: 22px;
+  }
+
+  .related-hover-title {
+    font-size: 1rem;
+  }
+
+  .related-hover-author {
+    font-size: 0.8rem;
+  }
+
+  .related-hover-tags {
+    font-size: 0.6rem;
   }
 }
