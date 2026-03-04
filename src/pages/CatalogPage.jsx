@@ -4,7 +4,7 @@ import PhotobookGrid from "../components/PhotobookGrid";
 import { getSearchableText } from "../utils/getSearchableText";
 import "../css/catalogPage.css";
 
-const API_URL = "http://localhost:3001";
+import { API_URL } from "../config/env";
 const librosPerPage = 12;
 
 export default function CatalogPage() {

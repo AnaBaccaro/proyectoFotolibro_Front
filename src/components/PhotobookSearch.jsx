@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/photobookSearch.css";
 
-const API_URL = "http://localhost:3001";
+import { API_URL } from "../config/env";
 
 const getTitleRaw = (b) => b?.Titulo || b?.["Título"] || "";
 const getTitle = (b) => (getTitleRaw(b) || "").toString().trim();

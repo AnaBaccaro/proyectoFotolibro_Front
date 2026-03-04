@@ -8,15 +8,14 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-const API_URL = "http://localhost:3001";
-const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
+import { API_URL, IMG_BASE_URL, PLACEHOLDER } from "../config/env";
 
 const getImgUrl = (imgName) => {
   const img = (imgName ?? "").toString().trim();
   if (!img || img.toLowerCase() === "null" || img.toLowerCase() === "undefined") {
     return PLACEHOLDER;
   }
-  return `${API_URL}/img/${encodeURIComponent(img)}`;
+  rreturn `${IMG_BASE_URL}/${encodeURIComponent(img)}`;
 };
 
 const getTitle = (b) =>

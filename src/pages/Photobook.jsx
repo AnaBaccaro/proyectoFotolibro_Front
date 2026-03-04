@@ -8,8 +8,7 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-const API_URL = "http://localhost:3001";
-const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
+import { API_URL, IMG_BASE_URL, PLACEHOLDER } from "../config/env";
 
 
 const PALETTE = ["#C7C7FF", "#FD3D05", "#e66e43"];
@@ -39,7 +38,7 @@ const getImgUrl = (imgName) => {
   if (!img || img.toLowerCase() === "null" || img.toLowerCase() === "undefined") {
     return PLACEHOLDER;
   }
-  return `${API_URL}/img/${encodeURIComponent(img)}`;
+  return `${IMG_BASE_URL}/${encodeURIComponent(img)}`;
 };
 
 // getField tolerante

@@ -7,8 +7,7 @@ import { getSearchableText } from "../utils/getSearchableText";
 import "../css/home.css";
 
 const BOOKS_PER_PAGE = 12;
-const API_URL = "http://localhost:3001";
-const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
+import { API_URL, IMG_BASE_URL, PLACEHOLDER } from "../config/env";
 
 const safeStr = (v) => (v ?? "").toString().trim();
 
@@ -21,7 +20,7 @@ const getImgUrl = (book) => {
     return PLACEHOLDER;
   }
 
-  return `${API_URL}/img/${encodeURIComponent(img)}`;
+  return `${IMG_BASE_URL}/${encodeURIComponent(img)}`;
 };
 
 export default function Home() {

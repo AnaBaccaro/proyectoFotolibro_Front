@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import "../css/photobookGrid.css";
 
-const API_URL = "http://localhost:3001";
-const PLACEHOLDER = `${API_URL}/img/placeholder.png`;
+import { IMG_BASE_URL, PLACEHOLDER } from "../config/env";
 
 const PALETTE = ["#C7C7FF", "#FD3D05", "#e66e43"];
 const PALETTE_NO_LILAC = ["#FD3D05", "#e66e43"];
@@ -69,7 +68,7 @@ const getImg = (libro) => {
     return PLACEHOLDER;
   }
 
-  return `${API_URL}/img/${encodeURIComponent(img)}`;
+  return `${IMG_BASE_URL}/${encodeURIComponent(img)}`;
 };
 
 const hashString = (str) => {
