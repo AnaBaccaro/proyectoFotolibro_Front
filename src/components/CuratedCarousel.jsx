@@ -15,7 +15,7 @@ const getImgUrl = (imgName) => {
   if (!img || img.toLowerCase() === "null" || img.toLowerCase() === "undefined") {
     return PLACEHOLDER;
   }
-  rreturn `${IMG_BASE_URL}/${encodeURIComponent(img)}`;
+  return `${IMG_BASE_URL}/${encodeURIComponent(img)}`;
 };
 
 const getTitle = (b) =>
