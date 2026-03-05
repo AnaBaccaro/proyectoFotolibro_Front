@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import "../css/navbar.css";
-import { IMG_BASE_URL } from "../config/env";
 
 export default function Navbar() {
   return (
@@ -8,7 +7,7 @@ export default function Navbar() {
       <div className="container navbar-container">
         <Link className="navbar-brand navbar-brand-custom" to="/">
           <img
-            src={`${IMG_BASE_URL}/PF_Logo_Horizontal_SVG.svg`}
+            src="/PF_Logo_Horizontal_SVG.svg"
             alt="Proyecto Fotolibro"
             className="navbar-logo"
             loading="eager"
