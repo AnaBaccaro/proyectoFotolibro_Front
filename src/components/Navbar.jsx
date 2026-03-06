@@ -12,10 +12,6 @@ export default function Navbar() {
             alt="Proyecto Fotolibro"
             className="navbar-logo"
             loading="eager"
-            onError={(e) => {
-              // Si falla el logo, no intentes localhost ni nada raro: solo ocultalo
-              e.currentTarget.style.display = "none";
-            }}
           />
         </Link>
 
@@ -24,7 +20,7 @@ export default function Navbar() {
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
+          aria-controls="#navbarNav"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
@@ -38,13 +34,11 @@ export default function Navbar() {
                 Catálogo
               </Link>
             </li>
-
             <li className="nav-item">
               <Link className="nav-link nav-big" to="/acerca">
                 Sobre el Proyecto
               </Link>
             </li>
-
             <li className="nav-item">
               <Link className="nav-link nav-big" to="/login">
                 Contacto
