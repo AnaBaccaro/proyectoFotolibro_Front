@@ -12,6 +12,10 @@ export default function Navbar() {
             alt="Proyecto Fotolibro"
             className="navbar-logo"
             loading="eager"
+            onError={(e) => {
+              // Si falla el logo, no intentes localhost ni nada raro: solo ocultalo
+              e.currentTarget.style.display = "none";
+            }}
           />
         </Link>
 
