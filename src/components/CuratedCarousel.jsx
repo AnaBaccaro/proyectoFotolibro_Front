@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/curatedCarousel.css";
 
@@ -18,67 +18,49 @@ const getImgUrl = (imgName) => {
   return `${IMG_BASE_URL}/${encodeURIComponent(img)}`;
 };
 
+const hasRealImage = (b) => {
+  const img = (b?.Imagen ?? "").toString().trim().toLowerCase();
+  return !!img && img !== "null" && img !== "undefined";
+};
+
+const isCurated = (b) => {
+  return (
+    b?.Curated === true ||
+    b?.Curated === 1 ||
+    b?.Curated === "1" ||
+    b?.Curated === "true"
+  );
+};
+
 const getTitle = (b) =>
-  (b?.Titulo || b?.["Título"] || b?.["Titulo"] || "Fotolibro").toString().trim();
+  ((b?.Titulo || b?.["Título"] || "").toString().trim() || "Fotolibro");
 
 const getAuthor = (b) => {
-  const first = b?.NombreFotografe || b?.["Nombre fotografe"] || b?.["Nombre fotógrafe"] || "";
-  const last = b?.ApellidoFotografe || b?.["Apellido fotografe"] || b?.["Apellido fotógrafe"] || "";
+  const first =
+    (b?.NombreFotografe || b?.["Nombre fotografe"] || "")
+      .toString()
+      .trim();
+
+  const last =
+    (b?.ApellidoFotografe || b?.["Apellido fotografe"] || "")
+      .toString()
+      .trim();
+
   const full = `${first} ${last}`.trim();
   return full || "-";
 };
 
-const parseTags = (b) => {
-  const raw = b?.Tags ?? b?.tags ?? b?.Tag ?? b?.tag ?? "";
-  if (Array.isArray(raw)) {
-    return raw.map((t) => (t ?? "").toString().trim()).filter(Boolean);
-  }
-  const s = raw.toString().trim();
-  if (!s) return [];
-  return s.split(/[,;\n]/g).map((t) => t.trim()).filter(Boolean);
-};
-
-const HOVER_COLORS = ["#C7C7FF", "#FD3D05", "#e66e43"];
-
-const hashString = (str) => {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = (h << 5) - h + str.charCodeAt(i);
-    h |= 0;
-  }
-  return Math.abs(h);
-};
-
-const pickHoverColor = (book) => {
-  const key = `${book?.id ?? ""}|${getTitle(book)}`;
-  const idx = hashString(key) % HOVER_COLORS.length;
-  return HOVER_COLORS[idx];
-};
-
 export default function CuratedCarousel() {
   const [books, setBooks] = useState([]);
-  const [failedIds, setFailedIds] = useState(new Set());
-  const [viewport, setViewport] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
 
   useEffect(() => {
     fetch(`${API_URL}/fotolibros`)
       .then((res) => res.json())
       .then((data) => {
-        const allBooks = Array.isArray(data) ? data : [];
+        const all = Array.isArray(data) ? data : [];
 
-        const curated = allBooks
-          .filter((b) => {
-            const img = (b?.Imagen ?? "").toString().trim().toLowerCase();
-            const hasImg = img && img !== "null" && img !== "undefined";
-
-            const curatedFlag =
-              b?.Curated === true ||
-              b?.Curated === 1 ||
-              b?.Curated === "1" ||
-              (typeof b?.Curated === "string" && b.Curated.trim().toLowerCase() === "true");
-
-            return curatedFlag && hasImg;
-          })
+        const curated = all
+          .filter((b) => isCurated(b) && hasRealImage(b))
           .sort(
             (a, b) =>
               (Number(a?.CuratedOrder) || 999) -
@@ -90,69 +72,43 @@ export default function CuratedCarousel() {
       });
   }, []);
 
-  useEffect(() => {
-    const onResize = () => setViewport(window.innerWidth);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  const visibleBooks = useMemo(() => {
-    return books.filter((b) => !failedIds.has(b.id));
-  }, [books, failedIds]);
-
-  const slidesPerView = useMemo(() => {
-    if (viewport >= 1024) return 5;
-    if (viewport >= 768) return 3;
-    return 2;
-  }, [viewport]);
-
-  const enableLoop = visibleBooks.length > slidesPerView;
-
-  if (!visibleBooks.length) return null;
+  if (!books.length) return null;
 
   return (
     <section className="curated-carousel-section">
       <h2 className="curated-title">NUESTRA SELECCIÓN</h2>
-      <p className="curated-subtitle">Nuestros fotolibros favoritos.</p>
 
       <Swiper
         modules={[Pagination]}
-        slidesPerView={slidesPerView}
+        slidesPerView={5}
         spaceBetween={24}
-        loop={enableLoop}
-        grabCursor={true}
         pagination={{ clickable: true }}
+        breakpoints={{
+          0: { slidesPerView: 2 },
+          768: { slidesPerView: 3 },
+          1024: { slidesPerView: 5 },
+        }}
       >
-        {visibleBooks.map((book) => {
-          const title = getTitle(book);
-          const author = getAuthor(book);
-          const tags = parseTags(book).slice(0, 2);
-          const tagPair = tags.join("/");
-          const bg = pickHoverColor(book);
+        {books.map((b) => {
+          const title = getTitle(b);
+          const author = getAuthor(b);
 
           return (
-            <SwiperSlide key={book.id}>
-              <Link to={`/fotolibro/${book.id}`} className="curated-card" style={{ "--hover-bg": bg }}>
+            <SwiperSlide key={b.id}>
+              <Link
+                to={`/fotolibro/${b.id}`}
+                className="curated-card"
+              >
                 <img
                   className="curated-cover"
-                  src={getImgUrl(book.Imagen)}
+                  src={getImgUrl(b.Imagen)}
                   alt={title}
                   loading="lazy"
-                  onError={() => {
-                    setFailedIds((prev) => new Set([...prev, book.id]));
-                  }}
                 />
 
                 <div className="curated-hover">
-                  <div className="curated-hover-top">
-                    {tagPair ? <div className="curated-tagpair">{tagPair}</div> : <div />}
-                  </div>
-
                   <div className="curated-hover-body">
                     <div className="curated-hover-title">{title}</div>
-                  </div>
-
-                  <div className="curated-hover-bottom">
                     <div className="curated-hover-author">{author}</div>
                   </div>
                 </div>

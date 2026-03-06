@@ -4,9 +4,6 @@ import "../css/latestGrid.css";
 
 import { API_URL, IMG_BASE_URL, PLACEHOLDER } from "../config/env";
 
-const PALETTE = ["#C7C7FF", "#FD3D05", "#e66e43"];
-const PALETTE_NO_LILAC = ["#FD3D05", "#e66e43"];
-
 const getImgUrl = (imgName) => {
   const img = (imgName ?? "").toString().trim();
   if (!img || img.toLowerCase() === "null" || img.toLowerCase() === "undefined") {
@@ -20,17 +17,17 @@ const hasRealImage = (b) => {
   return !!img && img !== "null" && img !== "undefined";
 };
 
-const getTitleFull = (b) =>
-  ((b?.Titulo || b?.["Título"] || b?.["Titulo"] || "").toString().trim() || "Fotolibro");
+const getTitle = (b) =>
+  ((b?.Titulo || b?.["Título"] || "").toString().trim() || "Fotolibro");
 
-const getAuthorFull = (b) => {
+const getAuthor = (b) => {
   const first =
-    (b?.NombreFotografe || b?.["Nombre fotografe"] || b?.["Nombre fotógrafe"] || "")
+    (b?.NombreFotografe || b?.["Nombre fotografe"] || "")
       .toString()
       .trim();
 
   const last =
-    (b?.ApellidoFotografe || b?.["Apellido fotografe"] || b?.["Apellido fotógrafe"] || "")
+    (b?.ApellidoFotografe || b?.["Apellido fotografe"] || "")
       .toString()
       .trim();
 
@@ -38,43 +35,8 @@ const getAuthorFull = (b) => {
   return full || "-";
 };
 
-const parseTags = (b) => {
-  const raw = b?.Tags ?? b?.tags ?? b?.Tag ?? b?.tag ?? "";
-  if (Array.isArray(raw)) return raw.map((t) => (t ?? "").toString().trim()).filter(Boolean);
-  const s = raw.toString().trim();
-  if (!s) return [];
-  return s.split(/[,;\n]/g).map((t) => t.trim()).filter(Boolean);
-};
-
-const hashString = (str) => {
-  const s = (str ?? "").toString();
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return Math.abs(h);
-};
-
-const pickColor = (id, palette) => {
-  const idx = hashString(String(id ?? "")) % palette.length;
-  return palette[idx];
-};
-
-const getHoverColor = (b) => {
-  const palette = hasRealImage(b) ? PALETTE : PALETTE_NO_LILAC;
-  return pickColor(b?.id, palette);
-};
-
-const oneLine = (s) => (s ?? "").toString().replace(/\s+/g, " ").trim();
-
-const truncate = (s, max) => {
-  const text = oneLine(s);
-  if (!text) return "-";
-  if (text.length <= max) return text;
-  return text.slice(0, Math.max(0, max - 1)).trimEnd() + "…";
-};
-
 export default function LatestGrid() {
   const [libros, setLibros] = useState([]);
-  const [failedIds, setFailedIds] = useState(new Set());
 
   useEffect(() => {
     fetch(`${API_URL}/fotolibros`)
@@ -82,73 +44,46 @@ export default function LatestGrid() {
       .then((data) => {
         const books = Array.isArray(data) ? data : [];
 
-        const withImage = books.filter((b) => {
-          const img = (b?.Imagen ?? "").toString().trim().toLowerCase();
-          return img && img !== "null" && img !== "undefined";
-        });
+        const latest = books
+          .filter(hasRealImage)
+          .slice(-3)
+          .reverse();
 
-        const latest = withImage.slice(-3).reverse();
         setLibros(latest);
       });
   }, []);
 
-  const visibleLibros = libros.filter((b) => !failedIds.has(b.id));
-
-  if (!visibleLibros.length) return null;
+  if (!libros.length) return null;
 
   return (
     <section className="latest-grid-section">
       <h2 className="latest-title">ÚLTIMAS INCORPORACIONES</h2>
 
-      <p className="latest-subtitle">
-        Selección especial de fotolibros latinoamericanos que destacan por su relevancia editorial y artística.
-      </p>
-
       <div className="latest-grid-container">
-        {visibleLibros.map((b) => {
-          const titleFull = getTitleFull(b);
-          const authorFull = getAuthorFull(b);
-
-          const title = truncate(titleFull, 50);
-          const author = truncate(authorFull, 34);
-
-          const tags = parseTags(b);
-          const bg = getHoverColor(b);
-          const tagPair = tags.slice(0, 2).join("/");
+        {libros.map((b) => {
+          const title = getTitle(b);
+          const author = getAuthor(b);
 
           return (
-            <Link key={b.id} to={`/fotolibro/${b.id}`} className="latest-grid-item hover-card">
+            <Link
+              key={b.id}
+              to={`/fotolibro/${b.id}`}
+              className="latest-grid-item hover-card"
+            >
               <img
                 className="hover-card-img"
                 src={getImgUrl(b.Imagen)}
-                alt={titleFull}
+                alt={title}
                 loading="lazy"
-                onError={() => {
-                  setFailedIds((prev) => new Set([...prev, b.id]));
-                }}
               />
 
-              <div className="hover-card-overlay" style={{ backgroundColor: bg }}>
-                <div className="hover-card-top">
-                  {tagPair ? (
-                    <div className="hover-card-tags" title={tags.join(" / ")}>
-                      {tagPair}
-                    </div>
-                  ) : (
-                    <div />
-                  )}
-                </div>
-
+              <div className="hover-card-overlay">
                 <div className="hover-card-center">
-                  <div className="hover-card-title" title={titleFull}>
-                    {title}
-                  </div>
+                  <div className="hover-card-title">{title}</div>
                 </div>
 
                 <div className="hover-card-bottom">
-                  <div className="hover-card-author" title={authorFull}>
-                    {author}
-                  </div>
+                  <div className="hover-card-author">{author}</div>
                 </div>
               </div>
             </Link>
