@@ -20,23 +20,21 @@ const getTitle = (libro) => {
 };
 
 const getAuthor = (libro) => {
-  const first = (
-    libro?.NombreFotografe ||
-    libro?.["Nombre fotografe"] ||
-    libro?.["Nombre fotógrafe"] ||
-    ""
-  )
-    .toString()
-    .trim();
+  const first =
+    (libro?.NombreFotografe ||
+      libro?.["Nombre fotografe"] ||
+      libro?.["Nombre fotógrafe"] ||
+      "")
+      .toString()
+      .trim();
 
-  const last = (
-    libro?.ApellidoFotografe ||
-    libro?.["Apellido fotografe"] ||
-    libro?.["Apellido fotógrafe"] ||
-    ""
-  )
-    .toString()
-    .trim();
+  const last =
+    (libro?.ApellidoFotografe ||
+      libro?.["Apellido fotografe"] ||
+      libro?.["Apellido fotógrafe"] ||
+      "")
+      .toString()
+      .trim();
 
   const full = `${first} ${last}`.trim();
   return full || "-";
@@ -66,11 +64,7 @@ const hasRealImage = (libro) => {
 const getImg = (libro) => {
   const img = (libro?.Imagen ?? "").toString().trim();
 
-  if (
-    !img ||
-    img.toLowerCase() === "null" ||
-    img.toLowerCase() === "undefined"
-  ) {
+  if (!img || img.toLowerCase() === "null" || img.toLowerCase() === "undefined") {
     return PLACEHOLDER;
   }
 
@@ -104,10 +98,8 @@ const truncate = (s, max) => {
   return text.slice(0, Math.max(0, max - 1)).trimEnd() + "…";
 };
 
-// === pagination con ellipsis ===
 const getPaginationItems = (currentPage, totalPages) => {
-  if (totalPages <= 7)
-    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const items = [];
   const first = 1;
@@ -154,16 +146,10 @@ export default function PhotobookGrid({
 
           const tags = parseTags(libro);
           const bg = getHoverColor(libro);
-
-          // formato: activismo/memoria (SIN espacios)
           const tagPair = tags.slice(0, 2).join("/");
 
           return (
-            <Link
-              key={id}
-              to={`/fotolibro/${id}`}
-              className="photobook-card hover-card"
-            >
+            <Link key={id} to={`/fotolibro/${id}`} className="photobook-card hover-card">
               <img
                 className="hover-card-img"
                 src={getImg(libro)}
@@ -177,10 +163,7 @@ export default function PhotobookGrid({
                 }}
               />
 
-              <div
-                className="hover-card-overlay"
-                style={{ backgroundColor: bg }}
-              >
+              <div className="hover-card-overlay" style={{ backgroundColor: bg }}>
                 <div className="hover-card-top">
                   {tagPair ? (
                     <div className="hover-card-tags" title={tags.join(" / ")}>
@@ -222,11 +205,7 @@ export default function PhotobookGrid({
           {pages.map((item, idx) => {
             if (item === "…") {
               return (
-                <span
-                  key={`dots-${idx}`}
-                  className="page-dots"
-                  aria-hidden="true"
-                >
+                <span key={`dots-${idx}`} className="page-dots" aria-hidden="true">
                   …
                 </span>
               );
