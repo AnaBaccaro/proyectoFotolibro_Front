@@ -10,7 +10,6 @@ import "swiper/css/pagination";
 
 import { API_URL, IMG_BASE_URL, PLACEHOLDER } from "../config/env";
 
-
 const PALETTE = ["#C7C7FF", "#FD3D05", "#e66e43"];
 const PALETTE_NO_LILAC = ["#FD3D05", "#e66e43"];
 
@@ -41,7 +40,6 @@ const getImgUrl = (imgName) => {
   return `${IMG_BASE_URL}/${encodeURIComponent(img)}`;
 };
 
-// getField tolerante
 const getField = (obj, key) => {
   if (!obj || typeof obj !== "object") return undefined;
   if (Object.prototype.hasOwnProperty.call(obj, key)) return obj[key];
@@ -73,7 +71,8 @@ const getAuthor = (b) => {
   return full ? full : "-";
 };
 
-const getPaisRaw = (b) => (getField(b, "Pais") ?? getField(b, "País") ?? "").toString().trim();
+const getPaisRaw = (b) =>
+  (getField(b, "Pais") ?? getField(b, "País") ?? "").toString().trim();
 
 const parseTags = (b) => {
   const raw =
@@ -114,10 +113,9 @@ const getAno = (b) => safe(getField(b, "Año") ?? getField(b, "Ano"));
 
 const hasSomeImage = (b) => {
   const img = (getField(b, "Imagen") ?? "").toString().trim().toLowerCase();
-  return img && img !== "null" && img !== "undefined";
+  return !!img && img !== "null" && img !== "undefined";
 };
 
-// color estable por id, como tu grid
 const hashString = (str) => {
   const s = (str ?? "").toString();
   let h = 0;
@@ -142,6 +140,7 @@ export default function Photobook() {
   const [book, setBook] = useState(null);
   const [status, setStatus] = useState("loading");
   const [allBooks, setAllBooks] = useState([]);
+  const [failedRelatedIds, setFailedRelatedIds] = useState(new Set());
 
   useEffect(() => {
     setStatus("loading");
@@ -206,6 +205,10 @@ export default function Photobook() {
       .slice(0, 12)
       .map((x) => x.b);
   }, [allBooks, book, id]);
+
+  const visibleRelated = useMemo(() => {
+    return related.filter((b) => !failedRelatedIds.has(getField(b, "id")));
+  }, [related, failedRelatedIds]);
 
   if (status === "loading") return null;
 
@@ -301,7 +304,7 @@ export default function Photobook() {
         </div>
       </section>
 
-      {related.length > 0 && (
+      {visibleRelated.length > 0 && (
         <section className="related-section">
           <h2 className="related-title">TAMBIÉN TE PUEDE INTERESAR</h2>
 
@@ -313,7 +316,7 @@ export default function Photobook() {
             slidesPerView={5}
             spaceBetween={24}
             grabCursor={true}
-            loop={related.length > 2}  
+            loop={visibleRelated.length > 2}
             pagination={{ clickable: true }}
             breakpoints={{
               0: { slidesPerView: 2 },
@@ -321,12 +324,12 @@ export default function Photobook() {
               1024: { slidesPerView: 5 },
             }}
           >
-            {related.map((b) => {
+            {visibleRelated.map((b) => {
               const rid = getField(b, "id");
               const rtitle = getTitle(b);
               const rauthor = getAuthor(b);
               const rtags = parseTags(b);
-              const tagPair = rtags.slice(0, 2).join("/"); // sin espacios
+              const tagPair = rtags.slice(0, 2).join("/");
               const bg = getHoverColor(b);
 
               return (
@@ -337,9 +340,9 @@ export default function Photobook() {
                       src={getImgUrl(getField(b, "Imagen"))}
                       alt={rtitle}
                       loading="lazy"
-                      onError={(e) => {
-                        e.currentTarget.src = PLACEHOLDER;
-                      }}
+                      onError={() =>
+                        setFailedRelatedIds((prev) => new Set([...prev, rid]))
+                      }
                     />
 
                     <div className="related-hover" style={{ backgroundColor: bg }}>
