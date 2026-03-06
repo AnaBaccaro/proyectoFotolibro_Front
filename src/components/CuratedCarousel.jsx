@@ -38,10 +38,8 @@ const parseTags = (b) => {
   return s.split(/[,;\n]/g).map((t) => t.trim()).filter(Boolean);
 };
 
-// Paleta (3 colores)
 const HOVER_COLORS = ["#C7C7FF", "#FD3D05", "#e66e43"];
 
-// Hash simple, estable
 const hashString = (str) => {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
@@ -59,12 +57,37 @@ const pickHoverColor = (book) => {
 
 export default function CuratedCarousel() {
   const [books, setBooks] = useState([]);
+  const [failedIds, setFailedIds] = useState(new Set());
   const [viewport, setViewport] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
 
   useEffect(() => {
-    fetch(`${API_URL}/fotolibros/curated`)
+    fetch(`${API_URL}/fotolibros`)
       .then((res) => res.json())
-      .then((data) => setBooks(Array.isArray(data) ? data : []));
+      .then((data) => {
+        const allBooks = Array.isArray(data) ? data : [];
+
+        const curated = allBooks
+          .filter((b) => {
+            const img = (b?.Imagen ?? "").toString().trim().toLowerCase();
+            const hasImg = img && img !== "null" && img !== "undefined";
+
+            const curatedFlag =
+              b?.Curated === true ||
+              b?.Curated === 1 ||
+              b?.Curated === "1" ||
+              (typeof b?.Curated === "string" && b.Curated.trim().toLowerCase() === "true");
+
+            return curatedFlag && hasImg;
+          })
+          .sort(
+            (a, b) =>
+              (Number(a?.CuratedOrder) || 999) -
+              (Number(b?.CuratedOrder) || 999)
+          )
+          .slice(0, 9);
+
+        setBooks(curated);
+      });
   }, []);
 
   useEffect(() => {
@@ -73,15 +96,19 @@ export default function CuratedCarousel() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  const visibleBooks = useMemo(() => {
+    return books.filter((b) => !failedIds.has(b.id));
+  }, [books, failedIds]);
+
   const slidesPerView = useMemo(() => {
     if (viewport >= 1024) return 5;
     if (viewport >= 768) return 3;
     return 2;
   }, [viewport]);
 
-  const enableLoop = books.length > slidesPerView;
+  const enableLoop = visibleBooks.length > slidesPerView;
 
-  if (!books.length) return null;
+  if (!visibleBooks.length) return null;
 
   return (
     <section className="curated-carousel-section">
@@ -96,11 +123,11 @@ export default function CuratedCarousel() {
         grabCursor={true}
         pagination={{ clickable: true }}
       >
-        {books.map((book) => {
+        {visibleBooks.map((book) => {
           const title = getTitle(book);
           const author = getAuthor(book);
           const tags = parseTags(book).slice(0, 2);
-          const tagPair = tags.join("/"); // ✅ formato final
+          const tagPair = tags.join("/");
           const bg = pickHoverColor(book);
 
           return (
@@ -111,19 +138,21 @@ export default function CuratedCarousel() {
                   src={getImgUrl(book.Imagen)}
                   alt={title}
                   loading="lazy"
-                  onError={(e) => {
-                    const el = e.currentTarget;
-                    if (el.dataset.fallback === "1") return;
-                    el.dataset.fallback = "1";
-                    el.src = PLACEHOLDER;
+                  onError={() => {
+                    setFailedIds((prev) => new Set([...prev, book.id]));
                   }}
                 />
 
                 <div className="curated-hover">
-                  {tagPair ? <div className="curated-tagpair">{tagPair}</div> : null}
+                  <div className="curated-hover-top">
+                    {tagPair ? <div className="curated-tagpair">{tagPair}</div> : <div />}
+                  </div>
 
                   <div className="curated-hover-body">
                     <div className="curated-hover-title">{title}</div>
+                  </div>
+
+                  <div className="curated-hover-bottom">
                     <div className="curated-hover-author">{author}</div>
                   </div>
                 </div>

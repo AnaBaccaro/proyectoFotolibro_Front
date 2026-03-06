@@ -74,14 +74,27 @@ const truncate = (s, max) => {
 
 export default function LatestGrid() {
   const [libros, setLibros] = useState([]);
+  const [failedIds, setFailedIds] = useState(new Set());
 
   useEffect(() => {
-    fetch(`${API_URL}/fotolibros/latest`)
+    fetch(`${API_URL}/fotolibros`)
       .then((res) => res.json())
-      .then((data) => setLibros(Array.isArray(data) ? data : []));
+      .then((data) => {
+        const books = Array.isArray(data) ? data : [];
+
+        const withImage = books.filter((b) => {
+          const img = (b?.Imagen ?? "").toString().trim().toLowerCase();
+          return img && img !== "null" && img !== "undefined";
+        });
+
+        const latest = withImage.slice(-3).reverse();
+        setLibros(latest);
+      });
   }, []);
 
-  if (!libros.length) return null;
+  const visibleLibros = libros.filter((b) => !failedIds.has(b.id));
+
+  if (!visibleLibros.length) return null;
 
   return (
     <section className="latest-grid-section">
@@ -92,12 +105,12 @@ export default function LatestGrid() {
       </p>
 
       <div className="latest-grid-container">
-        {libros.map((b) => {
+        {visibleLibros.map((b) => {
           const titleFull = getTitleFull(b);
           const authorFull = getAuthorFull(b);
 
-          const title = truncate(titleFull, 58);
-          const author = truncate(authorFull, 42);
+          const title = truncate(titleFull, 50);
+          const author = truncate(authorFull, 34);
 
           const tags = parseTags(b);
           const bg = getHoverColor(b);
@@ -110,8 +123,8 @@ export default function LatestGrid() {
                 src={getImgUrl(b.Imagen)}
                 alt={titleFull}
                 loading="lazy"
-                onError={(e) => {
-                  e.currentTarget.src = PLACEHOLDER;
+                onError={() => {
+                  setFailedIds((prev) => new Set([...prev, b.id]));
                 }}
               />
 

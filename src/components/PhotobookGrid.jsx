@@ -20,21 +20,23 @@ const getTitle = (libro) => {
 };
 
 const getAuthor = (libro) => {
-  const first =
-    (libro?.NombreFotografe ||
-      libro?.["Nombre fotografe"] ||
-      libro?.["Nombre fotógrafe"] ||
-      "")
-      .toString()
-      .trim();
+  const first = (
+    libro?.NombreFotografe ||
+    libro?.["Nombre fotografe"] ||
+    libro?.["Nombre fotógrafe"] ||
+    ""
+  )
+    .toString()
+    .trim();
 
-  const last =
-    (libro?.ApellidoFotografe ||
-      libro?.["Apellido fotografe"] ||
-      libro?.["Apellido fotógrafe"] ||
-      "")
-      .toString()
-      .trim();
+  const last = (
+    libro?.ApellidoFotografe ||
+    libro?.["Apellido fotografe"] ||
+    libro?.["Apellido fotógrafe"] ||
+    ""
+  )
+    .toString()
+    .trim();
 
   const full = `${first} ${last}`.trim();
   return full || "-";
@@ -64,7 +66,11 @@ const hasRealImage = (libro) => {
 const getImg = (libro) => {
   const img = (libro?.Imagen ?? "").toString().trim();
 
-  if (!img || img.toLowerCase() === "null" || img.toLowerCase() === "undefined") {
+  if (
+    !img ||
+    img.toLowerCase() === "null" ||
+    img.toLowerCase() === "undefined"
+  ) {
     return PLACEHOLDER;
   }
 
@@ -100,7 +106,8 @@ const truncate = (s, max) => {
 
 // === pagination con ellipsis ===
 const getPaginationItems = (currentPage, totalPages) => {
-  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
+  if (totalPages <= 7)
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const items = [];
   const first = 1;
@@ -122,7 +129,12 @@ const getPaginationItems = (currentPage, totalPages) => {
   return items;
 };
 
-export default function PhotobookGrid({ libros, currentPage, totalPages, setCurrentPage }) {
+export default function PhotobookGrid({
+  libros,
+  currentPage,
+  totalPages,
+  setCurrentPage,
+}) {
   if (!libros || libros.length === 0) return null;
 
   const pages = getPaginationItems(currentPage, totalPages);
@@ -137,8 +149,8 @@ export default function PhotobookGrid({ libros, currentPage, totalPages, setCurr
           const titleFull = getTitle(libro);
           const authorFull = getAuthor(libro);
 
-          const title = truncate(titleFull, 58);
-          const author = truncate(authorFull, 42);
+          const title = truncate(titleFull, 50);
+          const author = truncate(authorFull, 34);
 
           const tags = parseTags(libro);
           const bg = getHoverColor(libro);
@@ -147,7 +159,11 @@ export default function PhotobookGrid({ libros, currentPage, totalPages, setCurr
           const tagPair = tags.slice(0, 2).join("/");
 
           return (
-            <Link key={id} to={`/fotolibro/${id}`} className="photobook-card hover-card">
+            <Link
+              key={id}
+              to={`/fotolibro/${id}`}
+              className="photobook-card hover-card"
+            >
               <img
                 className="hover-card-img"
                 src={getImg(libro)}
@@ -161,7 +177,10 @@ export default function PhotobookGrid({ libros, currentPage, totalPages, setCurr
                 }}
               />
 
-              <div className="hover-card-overlay" style={{ backgroundColor: bg }}>
+              <div
+                className="hover-card-overlay"
+                style={{ backgroundColor: bg }}
+              >
                 <div className="hover-card-top">
                   {tagPair ? (
                     <div className="hover-card-tags" title={tags.join(" / ")}>
@@ -203,7 +222,11 @@ export default function PhotobookGrid({ libros, currentPage, totalPages, setCurr
           {pages.map((item, idx) => {
             if (item === "…") {
               return (
-                <span key={`dots-${idx}`} className="page-dots" aria-hidden="true">
+                <span
+                  key={`dots-${idx}`}
+                  className="page-dots"
+                  aria-hidden="true"
+                >
                   …
                 </span>
               );
